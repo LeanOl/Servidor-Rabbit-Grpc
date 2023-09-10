@@ -5,7 +5,7 @@ using AppCliente.Conexion;
 public class Menu
 {
     SocketHandler _socketHandler = new SocketHandler();
-    public void ConnectMenu()
+    public void StartMenu()
     {
         bool connectionOk = false;
         while (!connectionOk)
@@ -36,7 +36,7 @@ public class Menu
         
 
     }
-    public void StartMenu()
+    public void MainMenu()
     {
         bool salir = false;
         while(!salir)

@@ -1,11 +1,11 @@
-﻿namespace AppCliente
+﻿namespace AppServer
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-           Menu menu = new Menu();
-           menu.StartMenu();
+           Server server = new Server();
+           server.Start();
         }
     }
 }
