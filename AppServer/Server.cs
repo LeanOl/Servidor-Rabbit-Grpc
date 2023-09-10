@@ -17,7 +17,7 @@ public class Server
         while (true)
         {
             Socket clientSocket = socket.Accept();
-            
+            Console.WriteLine("Cliente conectado");
             new Thread(() => HandleClient(clientSocket)).Start();
         }
     }

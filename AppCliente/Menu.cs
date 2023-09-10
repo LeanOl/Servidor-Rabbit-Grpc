@@ -20,7 +20,7 @@ public class Menu
             {
                 _socketHandler.Connect(user, password);
                 connectionOk = true;
-                StartMenu();
+                MainMenu();
             }
             catch (SocketException e)
             {
