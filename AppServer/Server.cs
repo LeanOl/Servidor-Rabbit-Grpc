@@ -40,6 +40,7 @@ public class Server
             }
             
         }
+        Console.WriteLine("Cliente desconectado");
 
     }
 }
