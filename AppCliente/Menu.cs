@@ -1,39 +1,41 @@
 ﻿using System.Net.Sockets;
+using AppClient.Connection;
+using AppClient.Services;
 
-namespace AppCliente;
-using AppCliente.Conexion;
+namespace AppClient;
+
 public class Menu
 {
-    SocketHandler _socketHandler = new SocketHandler();
+    private readonly ConnectionHandler _connectionHandler = new ConnectionHandler();
+    private ClientServices? _clientServices;
     public void StartMenu()
     {
-        bool connectionOk = false;
-        while (!connectionOk)
+        try
         {
-            Console.WriteLine("Ingrese su usuario");
-            string user = Console.ReadLine();
-            Console.WriteLine("Ingrese su contraseña");
-            string password = Console.ReadLine();
+            Socket socket =_connectionHandler.Connect();
+           _clientServices = new ClientServices(socket);
 
+           bool authenticated = false;
+           while (!authenticated)
+           {
+               Console.WriteLine("Ingrese su usuario");
+               string user = Console.ReadLine();
+               Console.WriteLine("Ingrese su contraseña");
+               string password = Console.ReadLine();
 
-            try
-            {
-                _socketHandler.Connect(user, password);
-                connectionOk = true;
-                MainMenu();
-            }
-            catch (SocketException e)
-            {
-                Console.WriteLine("Error al conectarse al servidor");
-                Console.WriteLine(e.Message);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error");
-                Console.WriteLine(e.Message);
-            }
+              authenticated =_clientServices.Authenticate(user, password);
+               
+              if(authenticated) 
+                  MainMenu();
+
+           }
+
         }
-        
+        catch(SocketException ex) 
+        {
+            Console.WriteLine("Error al conectarse al servidor");
+            Console.WriteLine(ex.Message);
+        }
 
     }
     public void MainMenu()
@@ -75,7 +77,7 @@ public class Menu
                   Console.WriteLine("Calificar Producto"); 
                   break;
               case "exit":
-                  _socketHandler.Disconnect();
+                  _connectionHandler.Disconnect();
                   salir = true;
                   break;
               default:

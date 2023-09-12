@@ -1,4 +1,4 @@
-﻿namespace AppCliente
+﻿namespace AppClient
 {
     internal class Program
     {
