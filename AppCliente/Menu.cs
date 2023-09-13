@@ -22,14 +22,17 @@ public class Menu
                string user = Console.ReadLine();
                Console.WriteLine("Ingrese su contraseña");
                string password = Console.ReadLine();
-
-              authenticated =_clientServices.Authenticate(user, password);
                
-              if(authenticated) 
+               (authenticated,string responseMessage)=_clientServices.Authenticate(user, password);
+
+              if (authenticated)
+              {
+                  Console.WriteLine(responseMessage);
                   MainMenu();
-
+               }else{
+                  Console.WriteLine(responseMessage);
+              }
            }
-
         }
         catch(SocketException ex) 
         {
@@ -57,6 +60,7 @@ public class Menu
             {
                 case "1":
                   Console.WriteLine("Publicar producto");
+                  _clientServices.PublishProduct();
                   break;
               case "2":
                     Console.WriteLine("Comprar Producto"); 

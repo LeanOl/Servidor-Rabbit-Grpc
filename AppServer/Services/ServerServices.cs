@@ -21,16 +21,26 @@ public class ServerServices
         Byte[] credentialsLength = dataHandler.Receive(4);
         Byte[] credentials = dataHandler.Receive(BitConverter.ToInt32(credentialsLength));
         
-        int authentication = clientAuthenticator.Authenticate(credentials);
+        bool authentication = clientAuthenticator.Authenticate(credentials);
 
-        dataHandler.Send(BitConverter.GetBytes(authentication));
-        if (authentication == 1)
+        Byte[] responseCode;
+        Byte[] responseMessage;
+
+        if (authentication)
         {
-            Console.WriteLine("Client authenticated");
+            responseCode= BitConverter.GetBytes(1);
+           responseMessage= Encoding.UTF8.GetBytes("Cliente autenticado correctamente");
+            Console.WriteLine("Cliente autenticado correctamente");
         }
         else
         {
-            Console.WriteLine("Client failed authentication");
+            responseCode= BitConverter.GetBytes(0);
+            responseMessage= Encoding.UTF8.GetBytes("Error: usuario o contraseña incorrectos");
+            Console.WriteLine("Error: usuario o contraseña incorrectos");
         }
+        dataHandler.Send(responseCode);
+        Byte[] responseLength = BitConverter.GetBytes(responseMessage.Length);
+        dataHandler.Send(responseLength);
+        dataHandler.Send(responseMessage);
     }
 }

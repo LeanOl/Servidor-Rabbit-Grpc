@@ -2,5 +2,6 @@
 
 public enum Command
 {
-    Authenticate
+    Authenticate,
+    PublishProduct
 }
