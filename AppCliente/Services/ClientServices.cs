@@ -22,7 +22,7 @@ public class ClientServices
 
         Byte[] response= _dataHandler.Receive(4);
         int responseCode = BitConverter.ToInt32(response);
-
+        
         return responseCode == 1;
     }
 

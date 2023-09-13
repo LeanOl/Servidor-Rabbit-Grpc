@@ -1,22 +1,24 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using AppServer.Services;
 using Protocol;
 
 namespace AppServer;
 
 public class Server
 {
-    Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-    IPEndPoint endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"),20000);
+    readonly Socket _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+    readonly IPEndPoint _endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"),20000);
+    readonly ServerServices _serverServices = new ServerServices();
 
     public void Start()
     {
-        socket.Bind(endpoint);
-        socket.Listen(10);
+        _socket.Bind(_endpoint);
+        _socket.Listen(10);
         while (true)
         {
-            Socket clientSocket = socket.Accept();
+            Socket clientSocket = _socket.Accept();
             Console.WriteLine("Cliente conectado");
             new Thread(() => HandleClient(clientSocket)).Start();
         }
@@ -30,9 +32,8 @@ public class Server
         {
             try
             {
-                byte[] dataLength = dataHandler.Receive(4);
-                byte[] data = dataHandler.Receive(BitConverter.ToInt32(dataLength));
-                string message = Encoding.UTF8.GetString(data);
+                byte[] command = dataHandler.Receive(4);
+                _serverServices.ExecuteCommand(BitConverter.ToInt32(command), dataHandler);
             }
             catch (SocketException e)
             {
