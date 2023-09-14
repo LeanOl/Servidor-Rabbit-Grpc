@@ -12,7 +12,38 @@ public class ServerServices
             case (int)Command.Authenticate:
                 ExecuteAuthentication(dataHandler);
                 break;
+            case (int)Command.PublishProduct:
+                ExecutePublishProduct(dataHandler);
+                break;
         }
+    }
+
+    private void ExecutePublishProduct(DataHandler dataHandler)
+    {
+        ProductManager productManager = new ProductManager();
+        Byte[] productLength = dataHandler.Receive(4);
+        Byte[] product = dataHandler.Receive(BitConverter.ToInt32(productLength));
+        bool publish = productManager.PublishProduct(product);
+        Byte[] responseCode;
+        Byte[] responseMessage;
+
+        if (publish)
+        {
+            responseCode= BitConverter.GetBytes(1);
+            responseMessage= Encoding.UTF8.GetBytes("Producto publicado correctamente");
+            Console.WriteLine("Producto publicado correctamente");
+        }
+        else
+        {
+            responseCode= BitConverter.GetBytes(0);
+            responseMessage= Encoding.UTF8.GetBytes("Error: no se pudo publicar el producto");
+            Console.WriteLine("Error: no se pudo publicar el producto");
+        }
+
+        dataHandler.Send(responseCode);
+        Byte[] responseLength = BitConverter.GetBytes(responseMessage.Length);
+        dataHandler.Send(responseLength);
+        dataHandler.Send(responseMessage);
     }
 
     private void ExecuteAuthentication(DataHandler dataHandler)

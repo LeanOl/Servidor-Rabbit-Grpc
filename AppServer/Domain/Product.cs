@@ -14,6 +14,7 @@ namespace AppServer.Domain
         public int Stock { get; set;}
         public int Price { get; set; }
         public string Imagen { get; set; }
+        public string Owner { get; set; }
 
     }
 }

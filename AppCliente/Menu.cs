@@ -60,11 +60,13 @@ public class Menu
             {
                 case "1":
                   Console.WriteLine("Publicar producto");
-                  _clientServices.PublishProduct();
+                  string response=_clientServices.PublishProduct();
+                  Console.Clear();
+                  Console.WriteLine(response);
                   break;
               case "2":
-                    Console.WriteLine("Comprar Producto"); 
-                    break;
+                  Console.WriteLine("Comprar Producto");
+                  break;
               case "3":
                   Console.WriteLine("Modificar Producto");
                   break;
