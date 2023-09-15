@@ -7,12 +7,11 @@ namespace AppServer.Services;
 public class ProductManager
 {
     ProductDatabase _productDatabase = ProductDatabase.Instance;
-    public bool PublishProduct(Byte[] product)
+    public bool PublishProduct(string product)
     {
         try
         {
-            string productString = Encoding.UTF8.GetString(product);
-            string[] productArray = productString.Split(":");
+            string[] productArray = product.Split(":");
             string name = productArray[0];
             string description = productArray[1];
             int stock = Convert.ToInt32(productArray[2]);

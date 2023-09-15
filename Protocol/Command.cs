@@ -3,5 +3,7 @@
 public enum Command
 {
     Authenticate,
-    PublishProduct
+    PublishProduct,
+    GetProducts,
+    BuyProduct,
 }

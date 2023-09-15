@@ -66,6 +66,7 @@ public class Menu
                   break;
               case "2":
                   Console.WriteLine("Comprar Producto");
+                  _clientServices.BuyProduct();
                   break;
               case "3":
                   Console.WriteLine("Modificar Producto");

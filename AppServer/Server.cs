@@ -32,8 +32,8 @@ public class Server
         {
             try
             {
-                byte[] command = dataHandler.Receive(4);
-                _serverServices.ExecuteCommand(BitConverter.ToInt32(command), dataHandler);
+                (int command, string message) = dataHandler.ReceiveMessage();
+                _serverServices.ExecuteCommand(command,message, dataHandler);
             }
             catch (SocketException e)
             {

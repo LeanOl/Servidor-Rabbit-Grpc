@@ -15,17 +15,13 @@ public class ClientServices
 
     public (bool,string) Authenticate(string username, string password)
     {
-        Byte[] command= new byte[4];
-        command= BitConverter.GetBytes((int)Command.Authenticate);
-        _dataHandler.Send(command);
 
         SendCredentials(username,password);
 
-        Byte[] responseCode= _dataHandler.Receive(4);
-        int responseCodeInt= BitConverter.ToInt32(responseCode);
-        Byte[] responseLength= _dataHandler.Receive(4);
-        Byte[] response= _dataHandler.Receive(BitConverter.ToInt32(responseLength));
-        string responseMessage = Encoding.UTF8.GetString(response);
+        (int responseCommand,string responseMessage)=_dataHandler.ReceiveMessage();
+        string[] responseMessageSplit=responseMessage.Split(":");
+        int responseCodeInt = Convert.ToInt32(responseMessageSplit[0]);
+        responseMessage = responseMessageSplit[1];
 
         _username=username;
 
@@ -35,14 +31,7 @@ public class ClientServices
     private void SendCredentials(string user,string password)
     {
         string credentials = user + ":" + password;
-
-        
-        Byte[] size = BitConverter.GetBytes(credentials.Length);
-        _dataHandler.Send(size);
-
-        
-        Byte[] message = Encoding.UTF8.GetBytes(credentials);
-        _dataHandler.Send(message);
+        _dataHandler.SendMessage((int)Command.Authenticate, credentials);
         
     }
 
@@ -60,18 +49,9 @@ public class ClientServices
             int price = Convert.ToInt32(Console.ReadLine());
             string product = name + ":" + description + ":" + stock + ":" + price + ":"+_username ;
 
-            Byte[] command = BitConverter.GetBytes((int)Command.PublishProduct);
-            _dataHandler.Send(command);
-            Byte[] size = BitConverter.GetBytes(product.Length);
-            _dataHandler.Send(size);
-            Byte[] message = Encoding.UTF8.GetBytes(product);
-            _dataHandler.Send(message);
+            _dataHandler.SendMessage((int)Command.PublishProduct, product);
 
-            Byte[] responseCode = _dataHandler.Receive(4);
-            int responseCodeInt = BitConverter.ToInt32(responseCode);
-            Byte[] responseLength = _dataHandler.Receive(4);
-            Byte[] response = _dataHandler.Receive(BitConverter.ToInt32(responseLength));
-            string responseMessage = Encoding.UTF8.GetString(response);
+            (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
 
             return responseMessage;
 
@@ -84,6 +64,29 @@ public class ClientServices
         
         
 
+    }
+
+    public string BuyProduct()
+    {
+        string productName = "";
+        _dataHandler.SendMessage((int)Command.GetProducts, productName);
+
+        (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+       
+        foreach (var product in responseMessage.Split(":"))
+        {
+            Console.WriteLine(product);
+        }
+
+        Console.WriteLine("Ingrese el ID del producto que desea comprar");
+
+        string id = Console.ReadLine();
+
+        _dataHandler.SendMessage((int)Command.BuyProduct, id);
+
+        (responseCommand, responseMessage) = _dataHandler.ReceiveMessage();
+
+        return responseMessage;
     }
 }
 
