@@ -56,17 +56,20 @@ public class Menu
                               "exit- Desconectarse");
 
             string opcion = Console.ReadLine();
+            string response;
             switch (opcion)
             {
                 case "1":
                   Console.WriteLine("Publicar producto");
-                  string response=_clientServices.PublishProduct();
+                   response=_clientServices.PublishProduct();
                   Console.Clear();
                   Console.WriteLine(response);
                   break;
               case "2":
                   Console.WriteLine("Comprar Producto");
-                  _clientServices.BuyProduct();
+                   response=_clientServices.BuyProduct();
+                  Console.Clear();
+                  Console.WriteLine(response);
                   break;
               case "3":
                   Console.WriteLine("Modificar Producto");

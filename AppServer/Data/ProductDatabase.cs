@@ -26,9 +26,9 @@ public class ProductDatabase
         }
     }
 
-    public IEnumerable<Product> Get(Func<bool> condition)
+    public IEnumerable<Product> Get(Func<Product,bool> condition)
     {
-        return _products.Where(p => condition());
+        return _products.Where(condition);
     }
 
     public IEnumerable<Product> GetAll()

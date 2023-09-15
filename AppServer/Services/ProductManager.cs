@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using AppServer.Data;
 using AppServer.Domain;
+using Protocol;
 
 namespace AppServer.Services;
 
@@ -34,6 +35,50 @@ public class ProductManager
         {
             Console.WriteLine(e.Message);
             return false;
+        }
+        
+    }
+
+    public string GetProducts(string name)
+    {
+        string productString = "";
+        if (name == "")
+        {
+            IEnumerable<Product> products = _productDatabase.GetAll();
+            foreach (var product in products)
+            {
+                if(productString!="")
+                    productString += Constant.Separator2;
+                productString += product.Id+Constant.Separator1+product.Name+Constant.Separator1+product.Description+Constant.Separator1+product.Stock ;
+
+            }
+        }
+        else
+        {
+            IEnumerable<Product> products = _productDatabase.Get((p) => p.Name == name);
+            foreach (var product in products)
+            {
+                if(productString!="")
+                    productString += Constant.Separator2;
+                productString += product.Id+Constant.Separator1+product.Name+Constant.Separator1;
+            }
+        }
+
+        return productString;
+    }
+
+    public void BuyProduct(string id)
+    {
+        int idProduct = Convert.ToInt32(id);
+        Product product = _productDatabase.Get((p) => p.Id == idProduct).FirstOrDefault();
+        if (product != null )
+        {
+            if(product.Stock == 0)
+                throw new Exception("Error! el producto no tiene stock");
+            product.Stock--;
+        }else
+        { 
+            throw new Exception("Error! el producto no existe");
         }
         
     }
