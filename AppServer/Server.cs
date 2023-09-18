@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 using AppServer.Services;
+using System.Configuration;
 using Protocol;
 
 namespace AppServer;
@@ -9,7 +10,9 @@ namespace AppServer;
 public class Server
 {
     readonly Socket _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-    readonly IPEndPoint _endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"),20000);
+    static string ipAddress = ConfigurationManager.AppSettings[ServerConfig.serverIPconfigkey];
+    static int serverPort = int.Parse(ConfigurationManager.AppSettings[ServerConfig.serverPortconfigkey]);
+    readonly IPEndPoint _endpoint = new IPEndPoint(IPAddress.Parse(ipAddress),serverPort);
     
 
     public void Start()
