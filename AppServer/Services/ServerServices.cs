@@ -83,21 +83,17 @@ public class ServerServices
 
     private void ExecuteAuthentication(string credentials)
     {
-        ClientAuthenticator clientAuthenticator = new ClientAuthenticator();
-        
-        bool authentication = clientAuthenticator.Authenticate(credentials);
-
         string responseMessage;
-
-        if (authentication)
+        try
         {
-            responseMessage= $"1{Protocol.Constant.Separator1}Cliente autenticado correctamente";
+            ClientAuthenticator clientAuthenticator = new ClientAuthenticator();
+            clientAuthenticator.Authenticate(credentials);
+            responseMessage = $"1{Protocol.Constant.Separator1}Cliente autenticado correctamente";
             Console.WriteLine("Cliente autenticado correctamente");
         }
-        else
+        catch (Exception e)
         {
-            responseMessage= $"0{Protocol.Constant.Separator1}Error! usuario o contraseña incorrectos";
-            Console.WriteLine("Error! usuario o contraseña incorrectos");
+            responseMessage= $"0{Protocol.Constant.Separator1}{e.Message}";
         }
         
         _dataHandler.SendMessage((int)Command.Authenticate,responseMessage);
