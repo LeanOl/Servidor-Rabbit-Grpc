@@ -57,7 +57,7 @@ public class ProductDatabase
             productToModify.Description = product.Description;
             productToModify.Stock = product.Stock;
             productToModify.Price = product.Price;
-            productToModify.Imagen = product.Imagen;
+            productToModify.Image = product.Image;
         }
     }
 

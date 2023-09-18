@@ -8,10 +8,9 @@ namespace AppServer.Services;
 public class ProductManager
 {
     ProductDatabase _productDatabase = ProductDatabase.Instance;
-    public bool PublishProduct(string product)
+    public void PublishProduct(string product,string imagePath)
     {
-        try
-        {
+        
             string[] productArray = product.Split(":");
             string name = productArray[0];
             string description = productArray[1];
@@ -25,19 +24,12 @@ public class ProductManager
                 Description = description,
                 Stock = stock,
                 Price = price,
-                Owner = username
+                Owner = username,
+                Image = imagePath
             };
+            
             _productDatabase.Add(newProduct);
-
-            return true;
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            return false;
-        }
-        
-    }
 
     public string GetProducts(string name)
     {
@@ -48,8 +40,8 @@ public class ProductManager
             foreach (var product in products)
             {
                 if(productString!="")
-                    productString += Constant.Separator2;
-                productString += product.Id+Constant.Separator1+product.Name+Constant.Separator1+product.Description+Constant.Separator1+product.Stock ;
+                    productString += Protocol.Constant.Separator2;
+                productString += product.Id+Protocol.Constant.Separator1+product.Name+Protocol.Constant.Separator1+product.Description+Protocol.Constant.Separator1+product.Stock ;
 
             }
         }
@@ -59,8 +51,8 @@ public class ProductManager
             foreach (var product in products)
             {
                 if(productString!="")
-                    productString += Constant.Separator2;
-                productString += product.Id+Constant.Separator1+product.Name+Constant.Separator1;
+                    productString += Protocol.Constant.Separator2;
+                productString += product.Id+Protocol.Constant.Separator1+product.Name+Protocol.Constant.Separator1;
             }
         }
 

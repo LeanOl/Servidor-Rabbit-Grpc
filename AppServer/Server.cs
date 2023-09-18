@@ -10,7 +10,7 @@ public class Server
 {
     readonly Socket _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
     readonly IPEndPoint _endpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"),20000);
-    readonly ServerServices _serverServices = new ServerServices();
+    
 
     public void Start()
     {
@@ -32,8 +32,9 @@ public class Server
         {
             try
             {
+                ServerServices serverServices = new ServerServices(clientSocket);
                 (int command, string message) = dataHandler.ReceiveMessage();
-                _serverServices.ExecuteCommand(command,message, dataHandler);
+                serverServices.ExecuteCommand(command,message);
             }
             catch (SocketException e)
             {

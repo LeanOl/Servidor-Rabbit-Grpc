@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Sockets;
+using System.Text;
 using Protocol;
 
 namespace AppServer.Services;
@@ -6,73 +7,81 @@ namespace AppServer.Services;
 public class ServerServices
 {
     private ProductManager _productManager = new ProductManager();
-    public void ExecuteCommand(int command, string message, DataHandler dataHandler)
+    private DataHandler _dataHandler;
+    private FileCommsHandler _fileCommsHandler;
+
+    public ServerServices(Socket socket)
+    {
+        _dataHandler = new DataHandler(socket);
+        _fileCommsHandler = new FileCommsHandler(socket);
+    }
+    public void ExecuteCommand(int command, string message)
     {
         switch (command)
         {
             case (int)Command.Authenticate:
-                ExecuteAuthentication(dataHandler,message);
+                ExecuteAuthentication(message);
                 break;
             case (int)Command.PublishProduct:
-                ExecutePublishProduct(dataHandler,message);
+                ExecutePublishProduct(message);
                 break;
             case (int)Command.GetProducts:
-                ExecuteGetProducts(dataHandler,message);
+                ExecuteGetProducts(message);
                 break;
             case (int)Command.BuyProduct:
-                ExecuteBuyProduct(dataHandler,message);
+                ExecuteBuyProduct(message);
                 break;
         }
     }
 
-    private void ExecuteBuyProduct(DataHandler dataHandler, string message)
+    private void ExecuteBuyProduct( string message)
     {
         try
         { 
             _productManager.BuyProduct(message);
-            dataHandler.SendMessage((int)Command.BuyProduct,"Compra realizada correctamente");
+            _dataHandler.SendMessage((int)Command.BuyProduct,"Compra realizada correctamente");
         }
         catch (Exception e)
         {
-            dataHandler.SendMessage((int)Command.BuyProduct,e.Message);
+            _dataHandler.SendMessage((int)Command.BuyProduct,e.Message);
         }
         
     }
 
-    private void ExecuteGetProducts(DataHandler dataHandler,string message)
+    private void ExecuteGetProducts(string message)
     {
         try
         {
             string products = _productManager.GetProducts(message);
-            dataHandler.SendMessage((int)Command.GetProducts, products);
+            _dataHandler.SendMessage((int)Command.GetProducts, products);
         }
         catch (Exception e)
         {
-            dataHandler.SendMessage((int)Command.GetProducts, e.Message);
+            _dataHandler.SendMessage((int)Command.GetProducts, e.Message);
         }
     }
 
-    private void ExecutePublishProduct(DataHandler dataHandler, string product)
+    private void ExecutePublishProduct(string product)
     {
-        
-        bool publish = _productManager.PublishProduct(product);
-        string responseMessage;
-
-        if (publish)
+        try
         {
-            responseMessage= "Producto publicado correctamente";
+            string imagePath = _fileCommsHandler.ReceiveFile();
+            _productManager.PublishProduct(product,imagePath);
+            string responseMessage;
+
+            responseMessage = "Producto publicado correctamente";
             Console.WriteLine("Producto publicado correctamente");
+            
+            _dataHandler.SendMessage((int)Command.PublishProduct, responseMessage);
         }
-        else
+        catch (Exception e)
         {
-            responseMessage="Error no se pudo publicar el producto";
-            Console.WriteLine("Error! no se pudo publicar el producto");
+            _dataHandler.SendMessage((int)Command.PublishProduct, e.Message);
         }
-
-        dataHandler.SendMessage((int)Command.PublishProduct,responseMessage);
+        
     }
 
-    private void ExecuteAuthentication(DataHandler dataHandler,string credentials)
+    private void ExecuteAuthentication(string credentials)
     {
         ClientAuthenticator clientAuthenticator = new ClientAuthenticator();
         
@@ -82,15 +91,15 @@ public class ServerServices
 
         if (authentication)
         {
-            responseMessage= $"1{Constant.Separator1}Cliente autenticado correctamente";
+            responseMessage= $"1{Protocol.Constant.Separator1}Cliente autenticado correctamente";
             Console.WriteLine("Cliente autenticado correctamente");
         }
         else
         {
-            responseMessage= $"0{Constant.Separator1}Error! usuario o contraseña incorrectos";
+            responseMessage= $"0{Protocol.Constant.Separator1}Error! usuario o contraseña incorrectos";
             Console.WriteLine("Error! usuario o contraseña incorrectos");
         }
         
-        dataHandler.SendMessage((int)Command.Authenticate,responseMessage);
+        _dataHandler.SendMessage((int)Command.Authenticate,responseMessage);
     }
 }
