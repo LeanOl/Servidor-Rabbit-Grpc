@@ -47,12 +47,13 @@ public class ProductManager
         }
         else
         {
-            IEnumerable<Product> products = _productDatabase.Get((p) => p.Name == name);
+            IEnumerable<Product> products = _productDatabase.Get((p) => p.Name == name).ToList();
             foreach (var product in products)
             {
                 if(productString!="")
-                    productString += Protocol.Constant.Separator2;
-                productString += product.Id+Protocol.Constant.Separator1+product.Name+Protocol.Constant.Separator1;
+                    productString += Protocol.Constant.Separator2; 
+
+                productString= product.Id + Protocol.Constant.Separator1 + product.Name + Protocol.Constant.Separator1 + product.Description + Protocol.Constant.Separator1 + product.Stock;
             }
         }
 

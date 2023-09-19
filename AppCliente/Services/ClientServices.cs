@@ -102,8 +102,31 @@ public class ClientServices
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error inesperado");
             return ex.Message;
+        }
+    }
+
+    public string GetProducts()
+    {
+        try
+        {
+            Console.WriteLine("Ingrese el nombre del producto");
+            string productName = Console.ReadLine();
+            _dataHandler.SendMessage((int)Command.GetProducts, productName);
+            (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+            foreach (string product in responseMessage.Split(Protocol.Constant.Separator2))
+            {
+                string[] productArray = product.Split(Protocol.Constant.Separator1);
+                Console.WriteLine(
+                    $"ID: {productArray[0]} Nombre: {productArray[1]} Descripcion: {productArray[2]} Stock: {productArray[3]}");
+            }
+
+
+            return "Consulta exitosa";
+        }
+        catch (Exception e)
+        {
+            return e.Message;
         }
     }
 }

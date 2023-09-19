@@ -88,6 +88,7 @@ public class Menu
                   break;
               case "5":
                   Console.WriteLine("Ver productos");
+                  response= _clientServices.GetProducts();
                   break;
               case "6":
                   Console.WriteLine("Ver producto especifico");
