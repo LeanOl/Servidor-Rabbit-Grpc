@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace AppServer.Services;
+﻿namespace AppServer.Services;
 
 public class ClientAuthenticator
 {

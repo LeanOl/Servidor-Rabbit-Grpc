@@ -6,4 +6,5 @@ public enum Command
     PublishProduct,
     GetProducts,
     BuyProduct,
+    GetSpecificProduct
 }

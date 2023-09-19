@@ -1,5 +1,4 @@
-﻿using System.Text;
-using AppServer.Data;
+﻿using AppServer.Data;
 using AppServer.Domain;
 using Protocol;
 
@@ -40,20 +39,20 @@ public class ProductManager
             foreach (var product in products)
             {
                 if(productString!="")
-                    productString += Protocol.Constant.Separator2;
-                productString += product.Id+Protocol.Constant.Separator1+product.Name+Protocol.Constant.Separator1+product.Description+Protocol.Constant.Separator1+product.Stock ;
+                    productString += Constant.Separator2;
+                productString += product.Id+Constant.Separator1+product.Name+Constant.Separator1+product.Description+Constant.Separator1+product.Stock ;
 
             }
         }
         else
         {
-            IEnumerable<Product> products = _productDatabase.Get((p) => p.Name == name).ToList();
+            IEnumerable<Product> products = _productDatabase.Get(p => p.Name == name).ToList();
             foreach (var product in products)
             {
                 if(productString!="")
-                    productString += Protocol.Constant.Separator2; 
+                    productString += Constant.Separator2; 
 
-                productString= product.Id + Protocol.Constant.Separator1 + product.Name + Protocol.Constant.Separator1 + product.Description + Protocol.Constant.Separator1 + product.Stock;
+                productString+= product.Id + Constant.Separator1 + product.Name + Constant.Separator1 + product.Description + Constant.Separator1 + product.Stock;
             }
         }
 
@@ -63,7 +62,7 @@ public class ProductManager
     public void BuyProduct(string id)
     {
         int idProduct = Convert.ToInt32(id);
-        Product product = _productDatabase.Get((p) => p.Id == idProduct).FirstOrDefault();
+        Product product = _productDatabase.Get(p => p.Id == idProduct).FirstOrDefault();
         if (product != null )
         {
             if(product.Stock == 0)
@@ -74,5 +73,39 @@ public class ProductManager
             throw new Exception("Error! el producto no existe");
         }
         
+    }
+
+    public (string,string) GetSpecificProduct(string productId)
+    {
+        try
+        {
+            int id = Convert.ToInt32(productId);
+            Product product = _productDatabase.Get(p => p.Id == id).FirstOrDefault();
+            if (product == null)
+            {
+                throw new Exception("Error! el producto no existe");
+            }
+            string productReviews="";
+            foreach (var review in product.Reviews )
+            {
+                if(productReviews!="")
+                    productReviews += Constant.Separator2;
+                productReviews += $"{review.Rating}{Constant.Separator3}{review.Comment}";
+            }
+            
+            string productString = Constant.OkCode+ Constant.Separator1 +
+                                   product.Id + Constant.Separator1 +
+                                   product.Name + Constant.Separator1 +
+                                   product.Description + Constant.Separator1 +
+                                   product.Stock + Constant.Separator1 +
+                                   product.Price + Constant.Separator1 +
+                                   product.Owner + Constant.Separator1 +
+                                   productReviews;
+            return (productString,product.Image);
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"{Constant.ErrorCode}{Constant.Separator1}Error! el producto no existe");
+        }
     }
 }

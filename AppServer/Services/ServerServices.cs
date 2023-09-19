@@ -1,12 +1,11 @@
 ﻿using System.Net.Sockets;
-using System.Text;
 using Protocol;
 
 namespace AppServer.Services;
 
 public class ServerServices
 {
-    private ProductManager _productManager = new ProductManager();
+    private ProductManager _productManager = new();
     private DataHandler _dataHandler;
     private FileCommsHandler _fileCommsHandler;
 
@@ -31,10 +30,27 @@ public class ServerServices
             case (int)Command.BuyProduct:
                 ExecuteBuyProduct(message);
                 break;
+            case (int)Command.GetSpecificProduct:
+                ExecuteGetSpecificProduct(message);
+                break;
         }
     }
 
-    private void ExecuteBuyProduct( string message)
+    private void ExecuteGetSpecificProduct(string productId)
+    {
+        try
+        {
+            (string product,string imagePath)= _productManager.GetSpecificProduct(productId);
+            _dataHandler.SendMessage((int)Command.GetSpecificProduct,product);
+            _fileCommsHandler.SendFile(imagePath);
+        }
+        catch (Exception e)
+        {
+            _dataHandler.SendMessage((int)Command.GetSpecificProduct,e.Message);
+        }
+    }
+
+    private void ExecuteBuyProduct(string message)
     {
         try
         { 
@@ -88,12 +104,12 @@ public class ServerServices
         {
             ClientAuthenticator clientAuthenticator = new ClientAuthenticator();
             clientAuthenticator.Authenticate(credentials);
-            responseMessage = $"1{Protocol.Constant.Separator1}Cliente autenticado correctamente";
+            responseMessage = $"1{Constant.Separator1}Cliente autenticado correctamente";
             Console.WriteLine("Cliente autenticado correctamente");
         }
         catch (Exception e)
         {
-            responseMessage= $"0{Protocol.Constant.Separator1}{e.Message}";
+            responseMessage= $"0{Constant.Separator1}{e.Message}";
         }
         
         _dataHandler.SendMessage((int)Command.Authenticate,responseMessage);

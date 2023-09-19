@@ -89,9 +89,12 @@ public class Menu
               case "5":
                   Console.WriteLine("Ver productos");
                   response= _clientServices.GetProducts();
+                  Console.WriteLine(response);
                   break;
               case "6":
                   Console.WriteLine("Ver producto especifico");
+                  response= _clientServices.GetSpecificProduct();
+                  Console.WriteLine(response);
                   break;
               case "7":
                   Console.WriteLine("Calificar Producto"); 
