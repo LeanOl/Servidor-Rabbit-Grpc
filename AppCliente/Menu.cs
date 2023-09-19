@@ -12,33 +12,42 @@ public class Menu
     {
         try
         {
-            Socket socket =_connectionHandler.Connect();
-           _clientServices = new ClientServices(socket);
 
-           bool authenticated = false;
-           while (!authenticated)
-           {
-               Console.WriteLine("Ingrese su usuario");
-               string user = Console.ReadLine();
-               Console.WriteLine("Ingrese su contraseña");
-               string password = Console.ReadLine();
-               
-               (authenticated,string responseMessage)=_clientServices.Authenticate(user, password);
+            bool authenticated = false;
+            while (!authenticated)
+            {
+                Socket socket = _connectionHandler.Connect();
+                _clientServices = new ClientServices(socket);
+                Console.WriteLine("Ingrese su usuario");
+                string user = Console.ReadLine();
+                Console.WriteLine("Ingrese su contraseña");
+                string password = Console.ReadLine();
 
-              if (authenticated)
-              {
-                  Console.WriteLine(responseMessage);
-                  MainMenu();
-               }else{
-                  Console.WriteLine(responseMessage);
-              }
-           }
+                (authenticated, string responseMessage) = _clientServices.Authenticate(user, password);
+
+                if (authenticated)
+                {
+                    Console.WriteLine(responseMessage);
+                    MainMenu();
+                }
+                else
+                {
+                    Console.WriteLine(responseMessage);
+                    _connectionHandler.Disconnect();
+                }
+            }
         }
-        catch(SocketException ex) 
+        catch (SocketException ex)
         {
             Console.WriteLine("Error al conectarse al servidor");
             Console.WriteLine(ex.Message);
         }
+        catch(Exception ex)
+        {
+            Console.WriteLine("Error inesperado");
+            Console.WriteLine(ex.Message);
+        }
+
 
     }
     public void MainMenu()

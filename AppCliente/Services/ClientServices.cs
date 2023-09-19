@@ -64,33 +64,47 @@ public class ClientServices
         catch (FormatException ex)
         {
             Console.WriteLine("El valor del stock/precio debe ser un numero");
-            return "Error";
+            return ex.Message;
+        }
+        catch (FileNotFoundException ex)
+        {
+            Console.WriteLine("Error al enviar el archivo");
+            return ex.Message;
         }
 
     }
 
     public string BuyProduct()
     {
-        string productName = "";
-        _dataHandler.SendMessage((int)Command.GetProducts, productName);
-
-        (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
-       
-        foreach (string product in responseMessage.Split(Protocol.Constant.Separator2))
+        try
         {
-            string[] productArray = product.Split(Protocol.Constant.Separator1);
-            Console.WriteLine($"ID: {productArray[0]} Nombre: {productArray[1]} Descripcion: {productArray[2]} Stock: {productArray[3]}");
+            string productName = "";
+            _dataHandler.SendMessage((int)Command.GetProducts, productName);
+
+            (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+
+            foreach (string product in responseMessage.Split(Protocol.Constant.Separator2))
+            {
+                string[] productArray = product.Split(Protocol.Constant.Separator1);
+                Console.WriteLine(
+                    $"ID: {productArray[0]} Nombre: {productArray[1]} Descripcion: {productArray[2]} Stock: {productArray[3]}");
+            }
+
+            Console.WriteLine("Ingrese el ID del producto que desea comprar");
+
+            string id = Console.ReadLine();
+
+            _dataHandler.SendMessage((int)Command.BuyProduct, id);
+
+            (responseCommand, responseMessage) = _dataHandler.ReceiveMessage();
+
+            return responseMessage;
         }
-
-        Console.WriteLine("Ingrese el ID del producto que desea comprar");
-
-        string id = Console.ReadLine();
-
-        _dataHandler.SendMessage((int)Command.BuyProduct, id);
-
-        (responseCommand, responseMessage) = _dataHandler.ReceiveMessage();
-
-        return responseMessage;
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error inesperado");
+            return ex.Message;
+        }
     }
 }
 

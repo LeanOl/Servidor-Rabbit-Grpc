@@ -37,7 +37,7 @@ public class FileCommsHandler
         }
         else
         {
-            throw new Exception("File does not exist");
+            throw new FileNotFoundException("File does not exist");
         }
     }
 
