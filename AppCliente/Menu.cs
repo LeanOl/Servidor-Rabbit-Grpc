@@ -87,18 +87,22 @@ public class Menu
                   Console.WriteLine("Eliminar producto");
                   break;
               case "5":
+                  Console.Clear();
                   Console.WriteLine("Ver productos");
                   response= _clientServices.GetProducts();
                   Console.WriteLine(response);
                   break;
               case "6":
+                  Console.Clear();
                   Console.WriteLine("Ver producto especifico");
                   response= _clientServices.GetSpecificProduct();
                   Console.WriteLine(response);
                   break;
               case "7":
-                  Console.WriteLine("Calificar Producto"); 
+                  Console.Clear();
+                  Console.WriteLine("Calificar Producto");
                   response= _clientServices.RateProduct();
+                  Console.WriteLine(response);
                   break;
               case "exit":
                   _connectionHandler.Disconnect();
