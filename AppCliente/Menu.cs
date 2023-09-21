@@ -98,6 +98,7 @@ public class Menu
                   break;
               case "7":
                   Console.WriteLine("Calificar Producto"); 
+                  response= _clientServices.RateProduct();
                   break;
               case "exit":
                   _connectionHandler.Disconnect();

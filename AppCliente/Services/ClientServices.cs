@@ -168,5 +168,10 @@ public class ClientServices
         }
         return reviewsString;
     }
+
+    public string RateProduct()
+    {
+        throw new NotImplementedException();
+    }
 }
 

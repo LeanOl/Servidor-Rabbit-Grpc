@@ -1,4 +1,6 @@
-﻿namespace AppServer.Services;
+﻿using Protocol;
+
+namespace AppServer.Services;
 
 public class ClientAuthenticator
 {
@@ -8,7 +10,7 @@ public class ClientAuthenticator
         string username = credentialsArray[0];
         string password = credentialsArray[1];
         if (!UserManager.ValidateUser(username, password))
-            throw new Exception("Error! usuario o contraseña incorrectos");
+            throw new Exception($"{Constant.ErrorCode}{Constant.Separator1}Error! usuario o contraseña incorrectos");
         
             
     }
