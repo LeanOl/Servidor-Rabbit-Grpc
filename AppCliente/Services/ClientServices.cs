@@ -164,14 +164,30 @@ public class ClientServices
             string[] reviewArray = review.Split(Constant.Separator3);
             if (reviewArray.Length == 1)
                 break;
-            reviewsString += $"Calificacion: {reviewArray[1]} Comentario: {reviewArray[0]} \n";
+            reviewsString += $"Calificacion: {reviewArray[0]} Comentario: {reviewArray[1]} \n";
         }
         return reviewsString;
     }
 
     public string RateProduct()
     {
-        throw new NotImplementedException();
+        try
+        {
+            Console.WriteLine("Ingrese el ID del producto");
+            string id = Console.ReadLine();
+            Console.WriteLine("Ingrese una calificacion del 1 al 10");
+            string rating = Console.ReadLine();
+            Console.WriteLine("Ingrese el comentario del producto");
+            string comment = Console.ReadLine();
+            string review = id + Constant.Separator1 + rating + Constant.Separator1 + comment;
+            _dataHandler.SendMessage((int)Command.RateProduct, review);
+            (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+            return responseMessage;
+        }
+        catch (Exception e)
+        {
+            return e.Message;
+        }
     }
 }
 

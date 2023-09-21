@@ -108,4 +108,16 @@ public class ProductManager
             throw new Exception($"{Constant.ErrorCode}{Constant.Separator1}Error! el producto no existe");
         }
     }
+
+    public void AddReview(string productId)
+    {
+        string[] productArray = productId.Split(Constant.Separator1);
+        int id = Convert.ToInt32(productArray[0]);
+        int rating = Convert.ToInt32(productArray[1]);
+        string comment = productArray[2];
+        Product product = _productDatabase.Get(p => p.Id == id).FirstOrDefault();
+        if (product == null)
+            throw new Exception("Error! el producto no existe");
+        product.Reviews.Add(new Review{Comment = comment,Rating = rating});
+    }
 }

@@ -36,12 +36,21 @@ public class ServerServices
                 case (int)Command.GetSpecificProduct:
                     ExecuteGetSpecificProduct(message);
                     break;
+                case (int)Command.RateProduct:
+                    ExecuteRateProduct(message);
+                    break;
             }
         }
         catch (Exception e)
         {
             _dataHandler.SendMessage(command, e.Message);
         }
+    }
+
+    private void ExecuteRateProduct(string review)
+    {
+        _productManager.AddReview(review);
+        _dataHandler.SendMessage((int)Command.RateProduct, "Review agregada correctamente");
     }
 
     private void ExecuteGetSpecificProduct(string productId)
