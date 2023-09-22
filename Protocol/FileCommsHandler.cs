@@ -40,23 +40,60 @@ public class FileCommsHandler
             throw new FileNotFoundException("File does not exist");
         }
     }
+    public void SendFile(string path,string fileName)
+    {
+        if (_fileHandler.FileExists(path))
+        {
+            // ---> Enviar el largo del nombre del archivo
+            _socketHelper.Send(_conversionHandler.ConvertIntToBytes(fileName.Length));
+            // ---> Enviar el nombre del archivo
+            _socketHelper.Send(_conversionHandler.ConvertStringToBytes(fileName));
 
-    public string ReceiveFile()
+            // ---> Obtener el tamaño del archivo
+            long fileSize = _fileHandler.GetFileSize(path);
+            // ---> Enviar el tamaño del archivo
+            var convertedFileSize = _conversionHandler.ConvertLongToBytes(fileSize);
+            _socketHelper.Send(convertedFileSize);
+            // ---> Enviar el archivo (pero con file stream)
+            SendFileWithStream(fileSize, path);
+        }
+        else
+        {
+            throw new FileNotFoundException("File does not exist");
+        }
+    }
+    public string ReceiveFile(string path)
     {
         // ---> Recibir el largo del nombre del archivo
         int fileNameSize = _conversionHandler.ConvertBytesToInt(
             _socketHelper.Receive(Constant.FixedDataSize));
         // ---> Recibir el nombre del archivo
         string fileName = _conversionHandler.ConvertBytesToString(_socketHelper.Receive(fileNameSize));
+        string fullPath = $@"{path}\{fileName}";
         // ---> Recibir el largo del archivo
         long fileSize = _conversionHandler.ConvertBytesToLong(
             _socketHelper.Receive(Constant.FixedFileSize));
         // ---> Recibir el archivo
-        ReceiveFileWithStreams(fileSize, fileName);
+        ReceiveFileWithStreams(fileSize, fullPath);
 
-        return fileName;
+        return fullPath;
     }
+    public string ReceiveFile(string path,string fileName)
+    {
+        // ---> Recibir el largo del nombre del archivo
+        int fileNameSize = _conversionHandler.ConvertBytesToInt(
+            _socketHelper.Receive(Constant.FixedDataSize));
+        // ---> Recibir el nombre del archivo
+        string reveivedFileName = _conversionHandler.ConvertBytesToString(_socketHelper.Receive(fileNameSize));
+        string fullPath = $@"{path}\{fileName}";
+        // ---> Recibir el largo del archivo
+        long fileSize = _conversionHandler.ConvertBytesToLong(
+            _socketHelper.Receive(Constant.FixedFileSize));
+        // ---> Recibir el archivo
+        ReceiveFileWithStreams(fileSize, fullPath);
 
+        return fullPath;
+    }
     private void SendFileWithStream(long fileSize, string path)
     {
         long fileParts = Constant.CalculateFileParts(fileSize);

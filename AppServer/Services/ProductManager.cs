@@ -1,16 +1,16 @@
 ﻿using AppServer.Data;
 using AppServer.Domain;
 using Protocol;
+using System.Configuration;
 
 namespace AppServer.Services;
 
 public class ProductManager
 {
     ProductDatabase _productDatabase = ProductDatabase.Instance;
-    public void PublishProduct(string product,string imagePath)
+    public void PublishProduct(string product,FileCommsHandler fileCommsHandler)
     {
-        
-            string[] productArray = product.Split(":");
+        string[] productArray = product.Split(":");
             string name = productArray[0];
             string description = productArray[1];
             int stock = Convert.ToInt32(productArray[2]);
@@ -23,11 +23,15 @@ public class ProductManager
                 Description = description,
                 Stock = stock,
                 Price = price,
-                Owner = username,
-                Image = imagePath
+                Owner = username
             };
             
             _productDatabase.Add(newProduct);
+            string imagePath = ConfigurationManager.AppSettings[ServerConfig.imagePath];
+            string imageName = newProduct.Id + "-image.jpg";
+
+            string filePath=fileCommsHandler.ReceiveFile(imagePath,imageName);
+            newProduct.Image = filePath;
         }
 
     public string GetProducts(string name)
