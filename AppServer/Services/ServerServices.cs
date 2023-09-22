@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System.Configuration;
+using System.Net.Sockets;
 using Protocol;
 
 namespace AppServer.Services;
@@ -74,8 +75,8 @@ public class ServerServices
 
     private void ExecutePublishProduct(string product)
     {
-        string imagePath = _fileCommsHandler.ReceiveFile();
-        _productManager.PublishProduct(product, imagePath);
+        
+        _productManager.PublishProduct(product,_fileCommsHandler);
         string responseMessage = "Producto publicado correctamente";
         Console.WriteLine(responseMessage);
         _dataHandler.SendMessage((int)Command.PublishProduct, responseMessage);

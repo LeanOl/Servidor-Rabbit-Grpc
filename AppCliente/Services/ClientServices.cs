@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System.Configuration;
+using System.Net.Sockets;
 using System.Text;
 using Protocol;
 namespace AppClient.Services;
@@ -141,7 +142,7 @@ public class ClientServices
             string[] productArray = responseMessage.Split(Constant.Separator1);
             if (productArray[0]==Constant.ErrorCode)
                 throw new Exception(productArray[1]);
-            string imagePath= _fileCommsHandler.ReceiveFile();
+            string imagePath= _fileCommsHandler.ReceiveFile(ConfigurationManager.AppSettings[ClientConfig.clientImagePath]);
             Console.WriteLine(
                                $"ID: {productArray[1]} Nombre: {productArray[2]} \n" +
                                $"Descripcion: {productArray[3]} Stock: {productArray[4]} \n" +
