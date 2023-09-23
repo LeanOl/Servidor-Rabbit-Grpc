@@ -124,4 +124,15 @@ public class ProductManager
             throw new Exception("Error! el producto no existe");
         product.Reviews.Add(new Review{Comment = comment,Rating = rating});
     }
+
+    public void DeleteProduct(int productId,string username)
+    {
+        Product product = _productDatabase.Get(p => p.Id == productId).FirstOrDefault();
+        if (product == null)
+            throw new Exception("Error! el producto no existe");
+        if (product.Owner != username)
+            throw new Exception("Error! el producto no pertenece al usuario");
+        FileDeleter.DeleteFile(product.Image);
+        _productDatabase.Delete(product);
+    }
 }

@@ -40,12 +40,24 @@ public class ServerServices
                 case (int)Command.RateProduct:
                     ExecuteRateProduct(message);
                     break;
+                case (int)Command.DeleteProduct:
+                    ExecuteDeleteProduct(message);
+                    break;
             }
         }
         catch (Exception e)
         {
             _dataHandler.SendMessage(command, e.Message);
         }
+    }
+
+    private void ExecuteDeleteProduct(string message)
+    {
+        string[] messageArray = message.Split(Constant.Separator1);
+        int productId = Convert.ToInt32(messageArray[0]);
+        string username = messageArray[1];
+        _productManager.DeleteProduct(productId,username);
+        _dataHandler.SendMessage((int)Command.DeleteProduct, "Producto eliminado correctamente");
     }
 
     private void ExecuteRateProduct(string review)
