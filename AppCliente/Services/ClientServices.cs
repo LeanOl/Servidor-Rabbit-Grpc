@@ -190,5 +190,23 @@ public class ClientServices
             return e.Message;
         }
     }
+
+    public string DeleteProduct()
+    {
+        try
+        {
+            Console.WriteLine("Ingrese el ID del producto");
+            string id = Console.ReadLine();
+            string username = _username;
+            string message = id + Constant.Separator1 + username;
+            _dataHandler.SendMessage((int)Command.DeleteProduct, message);
+            (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+            return responseMessage;
+        }
+        catch (Exception e)
+        {
+            return e.Message;
+        }
+    }
 }
 

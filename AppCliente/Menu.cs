@@ -85,6 +85,8 @@ public class Menu
                   break;
               case "4":
                   Console.WriteLine("Eliminar producto");
+                  response= _clientServices.DeleteProduct();
+                  Console.WriteLine(response);
                   break;
               case "5":
                   Console.Clear();

@@ -7,5 +7,6 @@ public enum Command
     GetProducts,
     BuyProduct,
     GetSpecificProduct,
-    RateProduct
+    RateProduct,
+    DeleteProduct
 }
