@@ -20,6 +20,7 @@ public class ServerServices
     {
         try
         {
+            
             switch (command)
             {
                 case (int)Command.Authenticate:
@@ -43,12 +44,37 @@ public class ServerServices
                 case (int)Command.DeleteProduct:
                     ExecuteDeleteProduct(message);
                     break;
+                case (int)Command.ModifyProductData:
+                    ExecuteModifyProduct(message);
+                    break;
+                case (int)Command.ModifyProductImage:
+                    ExecuteModifyProductImage(message);
+                    break;
             }
         }
         catch (Exception e)
         {
             _dataHandler.SendMessage(command, e.Message);
         }
+    }
+
+    private void ExecuteModifyProductImage(string message)
+    {
+        string[] messageArray = message.Split(Constant.Separator1);
+        int productId = Convert.ToInt32(messageArray[0]);
+        string username = messageArray[1];
+        _productManager.ModifyProductImage(productId, username,_fileCommsHandler);
+        _dataHandler.SendMessage((int)Command.ModifyProductImage, "Imagen modificada correctamente");
+    }
+
+    private void ExecuteModifyProduct(string message)
+    {
+        string[] messageArray = message.Split(Constant.Separator1);
+        int productId = Convert.ToInt32(messageArray[0]);
+        string username = messageArray[1];
+        string product = messageArray[2];
+        _productManager.ModifyProductData(productId,username,product);
+        _dataHandler.SendMessage((int)Command.ModifyProductData, $"{Constant.OkCode}{Constant.Separator1}Producto modificado correctamente");
     }
 
     private void ExecuteDeleteProduct(string message)
@@ -99,7 +125,7 @@ public class ServerServices
        
         ClientAuthenticator clientAuthenticator = new ClientAuthenticator();
         clientAuthenticator.Authenticate(credentials);
-        string responseMessage = $"1{Constant.Separator1}Cliente autenticado correctamente";
+        string responseMessage = $"{Constant.OkCode}{Constant.Separator1}Cliente autenticado correctamente";
         Console.WriteLine("Cliente autenticado correctamente");
         _dataHandler.SendMessage((int)Command.Authenticate, responseMessage);
 

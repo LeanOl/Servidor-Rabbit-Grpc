@@ -8,5 +8,7 @@ public enum Command
     BuyProduct,
     GetSpecificProduct,
     RateProduct,
-    DeleteProduct
+    DeleteProduct,
+    ModifyProductData,
+    ModifyProductImage
 }

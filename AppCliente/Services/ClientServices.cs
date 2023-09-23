@@ -208,5 +208,46 @@ public class ClientServices
             return e.Message;
         }
     }
+
+    public void ModifyProduct()
+    {
+        try
+        {
+            Console.WriteLine("Ingrese el ID del producto");
+            string id = Console.ReadLine();
+            Console.WriteLine("Ingrese la nueva descripcion del producto");
+            string description = Console.ReadLine();
+            Console.WriteLine("Ingrese el nuevo stock del producto");
+            int stock = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Ingrese el nuevo precio del producto");
+            int price = Convert.ToInt32(Console.ReadLine());
+            string productData = id + Constant.Separator1+ _username+ Constant.Separator1 + description
+                             + Constant.Separator2 + stock + Constant.Separator2 +
+                             price;
+            _dataHandler.SendMessage((int)Command.ModifyProductData, productData);
+            (int responseCommand1, string responseMessage1) = _dataHandler.ReceiveMessage();
+            Console.WriteLine(responseMessage1.Split(Constant.Separator1)[1]);
+            string responseCode = responseMessage1.Split(Constant.Separator1)[0];
+            if (responseCode == Constant.ErrorCode)
+                return;
+
+            Console.WriteLine("Ingrese la nueva imagen del producto");
+            string imagePath = Console.ReadLine();
+            if (imagePath != "")
+            {
+                _dataHandler.SendMessage((int)Command.ModifyProductImage, id+Constant.Separator1+_username);
+                _fileCommsHandler.SendFile(imagePath);
+                (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+                Console.WriteLine(responseMessage);
+            }
+            
+           
+            
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
 }
 

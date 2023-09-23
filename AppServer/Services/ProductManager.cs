@@ -10,7 +10,7 @@ public class ProductManager
     ProductDatabase _productDatabase = ProductDatabase.Instance;
     public void PublishProduct(string product,FileCommsHandler fileCommsHandler)
     {
-        string[] productArray = product.Split(":");
+        string[] productArray = product.Split(Constant.Separator1);
             string name = productArray[0];
             string description = productArray[1];
             int stock = Convert.ToInt32(productArray[2]);
@@ -134,5 +134,34 @@ public class ProductManager
             throw new Exception("Error! el producto no pertenece al usuario");
         FileDeleter.DeleteFile(product.Image);
         _productDatabase.Delete(product);
+    }
+
+    public void ModifyProductData(int productId, string username, string product)
+    {
+        Product productToModify = _productDatabase.Get(p => p.Id == productId).FirstOrDefault();
+        if (productToModify == null)
+            throw new Exception($"{Constant.ErrorCode}{Constant.Separator1}Error! el producto no existe");
+        if (productToModify.Owner != username)
+            throw new Exception($"{Constant.ErrorCode}{Constant.Separator1}Error! el producto no pertenece al usuario");
+        string[] productArray = product.Split(Constant.Separator2);
+        string description = productArray[0];
+        int stock = Convert.ToInt32(productArray[1]);
+        int price = Convert.ToInt32(productArray[2]);
+        productToModify.Description = description;
+        productToModify.Stock = stock;
+        productToModify.Price = price;
+    }
+
+    public void ModifyProductImage(int productId,string username, FileCommsHandler fileCommsHandler)
+    {
+        
+        Product product = _productDatabase.Get(p => p.Id == productId).FirstOrDefault();
+        if (product == null)
+            throw new Exception("Error! el producto no existe");
+        if (product.Owner != username)
+            throw new Exception("Error! el producto no pertenece al usuario");
+        FileDeleter.DeleteFile(product.Image);
+        string fileName = productId + "-image.jpg";
+        fileCommsHandler.ReceiveFile(ConfigurationManager.AppSettings[ServerConfig.imagePath], fileName);
     }
 }
