@@ -19,7 +19,9 @@ public class Server
     {
         _socket.Bind(_endpoint);
         _socket.Listen(10);
-        while (true)
+        Console.WriteLine("Servidor iniciado");
+        bool serverOn = true;
+        while (serverOn)
         {
             Socket clientSocket = _socket.Accept();
             Console.WriteLine("Cliente conectado");
