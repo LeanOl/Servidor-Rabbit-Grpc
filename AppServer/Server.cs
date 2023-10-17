@@ -9,35 +9,35 @@ namespace AppServer;
 
 public class Server
 {
-    readonly Socket _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+   
     static string ipAddress = ConfigurationManager.AppSettings[ServerConfig.serverIPconfigkey];
     static int serverPort = int.Parse(ConfigurationManager.AppSettings[ServerConfig.serverPortconfigkey]);
-    readonly IPEndPoint _endpoint = new IPEndPoint(IPAddress.Parse(ipAddress),serverPort);
+    static readonly IPEndPoint _endpoint = new IPEndPoint(IPAddress.Parse(ipAddress),serverPort);
+    readonly TcpListener _listener = new TcpListener(_endpoint);
     
 
     public void Start()
     {
-        _socket.Bind(_endpoint);
-        _socket.Listen(10);
+       _listener.Start();
         Console.WriteLine("Servidor iniciado");
         bool serverOn = true;
         while (serverOn)
         {
-            Socket clientSocket = _socket.Accept();
+            TcpClient tcpClient = _listener.AcceptTcpClient();
             Console.WriteLine("Cliente conectado");
-            new Thread(() => HandleClient(clientSocket)).Start();
+            new Thread(() => HandleClient(tcpClient)).Start();
         }
     }
 
-    public void HandleClient(Socket clientSocket)
+    public void HandleClient(TcpClient tcpClient)
     {
         bool conectado = true;
-        DataHandler dataHandler = new DataHandler(clientSocket);
+        DataHandler dataHandler = new DataHandler(tcpClient);
         while (conectado)
         {
             try
             {
-                ServerServices serverServices = new ServerServices(clientSocket);
+                ServerServices serverServices = new ServerServices(tcpClient);
                 (int command, string message) = dataHandler.ReceiveMessage();
                 serverServices.ExecuteCommand(command,message);
             }

@@ -16,8 +16,8 @@ public class Menu
             bool authenticated = false;
             while (!authenticated)
             {
-                Socket socket = _connectionHandler.Connect();
-                _clientServices = new ClientServices(socket);
+                TcpClient tcpClient = _connectionHandler.Connect();
+                _clientServices = new ClientServices(tcpClient);
                 Console.WriteLine("Ingrese su usuario");
                 string user = Console.ReadLine();
                 Console.WriteLine("Ingrese su contraseña");

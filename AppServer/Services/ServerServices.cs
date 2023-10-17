@@ -10,10 +10,10 @@ public class ServerServices
     private DataHandler _dataHandler;
     private FileCommsHandler _fileCommsHandler;
 
-    public ServerServices(Socket socket)
+    public ServerServices(TcpClient tcpClient)
     {
-        _dataHandler = new DataHandler(socket);
-        _fileCommsHandler = new FileCommsHandler(socket);
+        _dataHandler = new DataHandler(tcpClient);
+        _fileCommsHandler = new FileCommsHandler(tcpClient);
     }
 
     public void ExecuteCommand(int command, string message)

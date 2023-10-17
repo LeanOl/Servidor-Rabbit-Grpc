@@ -5,10 +5,10 @@ namespace Protocol
 {
     public class DataHandler
     {
-        private readonly Socket _socket;
-        public DataHandler(Socket socket)
+        private readonly TcpClient _tcpClient;
+        public DataHandler(TcpClient tcpClient)
         {
-            _socket= socket;
+            _tcpClient= tcpClient;
         }
 
         public (int, string) ReceiveMessage()
@@ -32,14 +32,14 @@ namespace Protocol
         }
         public void Send(Byte[] data)
         {
-            int offset = 0;
-            int size = data.Length;
-            while (offset < size)
+            try
             {
-                int sent = _socket.Send(data, offset, size - offset, SocketFlags.None);
-                if (sent == 0)
-                    throw new SocketException();
-                offset += sent;
+                NetworkStream stream = _tcpClient.GetStream();
+                stream.Write(data);
+            }
+            catch (SocketException)
+            {
+                throw new SocketException();
             }
         }
 
@@ -47,11 +47,14 @@ namespace Protocol
         {
             byte[] data = new byte[size];
             int offset = 0;
+            NetworkStream stream = _tcpClient.GetStream();
             while (offset < size)
             {
-                int received = _socket.Receive(data, offset, size - offset, SocketFlags.None);
+                int received = stream.Read(data, offset, size - offset);
                 if (received == 0)
+                {
                     throw new SocketException();
+                }
                 offset += received;
             }
             return data;

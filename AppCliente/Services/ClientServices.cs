@@ -10,10 +10,10 @@ public class ClientServices
     private FileCommsHandler _fileCommsHandler;
     private string _username;
 
-    public ClientServices(Socket socket)
+    public ClientServices(TcpClient tcpClient)
     {
-       _dataHandler = new DataHandler(socket);
-        _fileCommsHandler = new FileCommsHandler(socket);
+       _dataHandler = new DataHandler(tcpClient);
+        _fileCommsHandler = new FileCommsHandler(tcpClient);
     }
 
     public (bool,string) Authenticate(string username, string password)
