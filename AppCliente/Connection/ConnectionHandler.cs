@@ -13,10 +13,10 @@ public class ConnectionHandler
     static int serverPort = int.Parse(ConfigurationManager.AppSettings[ClientConfig.serverPortconfigkey]);
     private IPEndPoint endpointRemoto = new IPEndPoint(IPAddress.Parse(serverIpAddress),serverPort);
 
-    public TcpClient Connect()
+    public async Task<TcpClient> ConnectAsync()
     {
         _tcpClient = new TcpClient(endpointLocal);
-        _tcpClient.Connect(endpointRemoto);
+        await _tcpClient.ConnectAsync(endpointRemoto);
 
         return _tcpClient;
     }

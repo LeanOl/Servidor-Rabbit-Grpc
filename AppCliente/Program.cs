@@ -2,13 +2,13 @@
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             bool seguir = true;
             while (seguir)
             {
                 Menu menu = new Menu();
-                menu.StartMenu();
+                await menu.StartMenuAsync();
                 Console.WriteLine("Quieres cerrar la aplicacion y/n");
                 string answer = Console.ReadLine();
                 if (answer == "y")

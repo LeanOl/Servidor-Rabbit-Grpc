@@ -17,84 +17,84 @@ public class FileCommsHandler
         _tcpHelper = new DataHandler(tcpClient);
     }
 
-    public void SendFile(string path)
+    public async Task SendFileAsync(string path)
     {
         if (_fileHandler.FileExists(path))
         {
             var fileName = _fileHandler.GetFileName(path);
             // ---> Enviar el largo del nombre del archivo
-            _tcpHelper.Send(_conversionHandler.ConvertIntToBytes(fileName.Length));
+            await _tcpHelper.SendAsync(_conversionHandler.ConvertIntToBytes(fileName.Length));
             // ---> Enviar el nombre del archivo
-            _tcpHelper.Send(_conversionHandler.ConvertStringToBytes(fileName));
+            await _tcpHelper.SendAsync(_conversionHandler.ConvertStringToBytes(fileName));
 
             // ---> Obtener el tamaño del archivo
             long fileSize = _fileHandler.GetFileSize(path);
             // ---> Enviar el tamaño del archivo
             var convertedFileSize = _conversionHandler.ConvertLongToBytes(fileSize);
-            _tcpHelper.Send(convertedFileSize);
+            await _tcpHelper.SendAsync(convertedFileSize);
             // ---> Enviar el archivo (pero con file stream)
-            SendFileWithStream(fileSize, path);
+            await SendFileWithStreamAsync(fileSize, path);
         }
         else
         {
             throw new FileNotFoundException("File does not exist");
         }
     }
-    public void SendFile(string path,string fileName)
+    public async Task SendFileAsync(string path,string fileName)
     {
         if (_fileHandler.FileExists(path))
         {
             // ---> Enviar el largo del nombre del archivo
-            _tcpHelper.Send(_conversionHandler.ConvertIntToBytes(fileName.Length));
+            await _tcpHelper.SendAsync(_conversionHandler.ConvertIntToBytes(fileName.Length));
             // ---> Enviar el nombre del archivo
-            _tcpHelper.Send(_conversionHandler.ConvertStringToBytes(fileName));
+            await _tcpHelper.SendAsync(_conversionHandler.ConvertStringToBytes(fileName));
 
             // ---> Obtener el tamaño del archivo
             long fileSize = _fileHandler.GetFileSize(path);
             // ---> Enviar el tamaño del archivo
             var convertedFileSize = _conversionHandler.ConvertLongToBytes(fileSize);
-            _tcpHelper.Send(convertedFileSize);
+            await _tcpHelper.SendAsync(convertedFileSize);
             // ---> Enviar el archivo (pero con file stream)
-            SendFileWithStream(fileSize, path);
+            await SendFileWithStreamAsync(fileSize, path);
         }
         else
         {
             throw new FileNotFoundException("File does not exist");
         }
     }
-    public string ReceiveFile(string path)
+    public async Task<string> ReceiveFileAsync(string path)
     {
         // ---> Recibir el largo del nombre del archivo
         int fileNameSize = _conversionHandler.ConvertBytesToInt(
-            _tcpHelper.Receive(Constant.FixedDataSize));
+            await _tcpHelper.ReceiveAsync(Constant.FixedDataSize));
         // ---> Recibir el nombre del archivo
-        string fileName = _conversionHandler.ConvertBytesToString(_tcpHelper.Receive(fileNameSize));
+        string fileName = _conversionHandler.ConvertBytesToString(await _tcpHelper.ReceiveAsync(fileNameSize));
         string fullPath = $@"{path}\{fileName}";
         // ---> Recibir el largo del archivo
-        long fileSize = _conversionHandler.ConvertBytesToLong(
-            _tcpHelper.Receive(Constant.FixedFileSize));
+        long fileSize = _conversionHandler.ConvertBytesToLong(await _tcpHelper.ReceiveAsync(Constant.FixedFileSize));
         // ---> Recibir el archivo
-        ReceiveFileWithStreams(fileSize, fullPath);
+        ReceiveFileWithStreamsAsync(fileSize, fullPath);
 
         return fullPath;
     }
-    public string ReceiveFile(string path,string fileName)
+    public async Task<string> ReceiveFileAsync(string path,string fileName)
     {
         // ---> Recibir el largo del nombre del archivo
         int fileNameSize = _conversionHandler.ConvertBytesToInt(
-            _tcpHelper.Receive(Constant.FixedDataSize));
+           await _tcpHelper.ReceiveAsync(Constant.FixedDataSize));
         // ---> Recibir el nombre del archivo
-        string reveivedFileName = _conversionHandler.ConvertBytesToString(_tcpHelper.Receive(fileNameSize));
+        string reveivedFileName = _conversionHandler.ConvertBytesToString(
+            await _tcpHelper.ReceiveAsync(fileNameSize));
         string fullPath = $@"{path}\{fileName}";
         // ---> Recibir el largo del archivo
         long fileSize = _conversionHandler.ConvertBytesToLong(
-            _tcpHelper.Receive(Constant.FixedFileSize));
+            await _tcpHelper.ReceiveAsync(Constant.FixedFileSize));
         // ---> Recibir el archivo
-        ReceiveFileWithStreams(fileSize, fullPath);
+        ReceiveFileWithStreamsAsync(fileSize, fullPath);
 
         return fullPath;
     }
-    private void SendFileWithStream(long fileSize, string path)
+    private async Task SendFileWithStreamAsync(long fileSize, string path)
     {
         long fileParts = Constant.CalculateFileParts(fileSize);
         long offset = 0;
@@ -121,12 +121,12 @@ public class FileCommsHandler
                 offset += Constant.MaxPacketSize;
             }
 
-            _tcpHelper.Send(data); //3- Envío ese segmento a travez de la red
+            await _tcpHelper.SendAsync(data); //3- Envío ese segmento a travez de la red
             currentPart++;
         }
     }
 
-    private void ReceiveFileWithStreams(long fileSize, string fileName)
+    private async Task ReceiveFileWithStreamsAsync(long fileSize, string fileName)
     {
         long fileParts = Constant.CalculateFileParts(fileSize);
         long offset = 0;
@@ -141,13 +141,13 @@ public class FileCommsHandler
             {
                 //1.1 - Si es, recibo la ultima parte
                 var lastPartSize = (int)(fileSize - offset);
-                data = _tcpHelper.Receive(lastPartSize);
+                data = await _tcpHelper.ReceiveAsync(lastPartSize);
                 offset += lastPartSize;
             }
             else
             {
                 //2.2- Si no, recibo una parte cualquiera
-                data = _tcpHelper.Receive(Constant.MaxPacketSize);
+                data = await _tcpHelper.ReceiveAsync(Constant.MaxPacketSize);
                 offset += Constant.MaxPacketSize;
             }
             //3- Escribo esa parte del archivo a disco

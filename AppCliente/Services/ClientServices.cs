@@ -16,12 +16,12 @@ public class ClientServices
         _fileCommsHandler = new FileCommsHandler(tcpClient);
     }
 
-    public (bool,string) Authenticate(string username, string password)
+    public async Task<(bool,string)> AuthenticateAsync(string username, string password)
     {
 
-        SendCredentials(username,password);
+        await SendCredentialsAsync(username,password);
 
-        (int responseCommand,string responseMessage)=_dataHandler.ReceiveMessage();
+        (int responseCommand,string responseMessage)=await _dataHandler.ReceiveMessageAsync();
         string[] responseMessageSplit=responseMessage.Split(Constant.Separator1);
         int responseCodeInt = Convert.ToInt32(responseMessageSplit[0]);
         responseMessage = responseMessageSplit[1];
@@ -31,14 +31,14 @@ public class ClientServices
         return (responseCodeInt==1,responseMessage);
     }
 
-    private void SendCredentials(string user,string password)
+    private async Task SendCredentialsAsync(string user,string password)
     {
         string credentials = user + Constant.Separator1 + password;
-        _dataHandler.SendMessage((int)Command.Authenticate, credentials);
+        await _dataHandler.SendMessageAsync((int)Command.Authenticate, credentials);
         
     }
 
-    public string PublishProduct()
+    public async Task<string> PublishProductAsync()
     {
         try
         {
@@ -55,9 +55,9 @@ public class ClientServices
             string product = name + Constant.Separator1 + description
                              + Constant.Separator1 + stock + Constant.Separator1 +
                              price + Constant.Separator1 +_username ;
-            _dataHandler.SendMessage((int)Command.PublishProduct, product);
-            _fileCommsHandler.SendFile(imagePath);
-            (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+            await _dataHandler.SendMessageAsync((int)Command.PublishProduct, product);
+            await _fileCommsHandler.SendFileAsync(imagePath);
+            (int responseCommand, string responseMessage) = await _dataHandler.ReceiveMessageAsync();
 
             return responseMessage;
 
@@ -75,14 +75,14 @@ public class ClientServices
 
     }
 
-    public string BuyProduct()
+    public async Task<string> BuyProductAsync()
     {
         try
         {
             string productName = "";
-            _dataHandler.SendMessage((int)Command.GetProducts, productName);
+            await _dataHandler.SendMessageAsync((int)Command.GetProducts, productName);
 
-            (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+            (int responseCommand, string responseMessage) = await _dataHandler.ReceiveMessageAsync();
 
             foreach (string product in responseMessage.Split(Constant.Separator2))
             {
@@ -95,9 +95,9 @@ public class ClientServices
 
             string id = Console.ReadLine();
 
-            _dataHandler.SendMessage((int)Command.BuyProduct, id);
+            await _dataHandler.SendMessageAsync((int)Command.BuyProduct, id);
 
-            (responseCommand, responseMessage) = _dataHandler.ReceiveMessage();
+            (responseCommand, responseMessage) = await _dataHandler.ReceiveMessageAsync();
 
             return responseMessage;
         }
@@ -107,14 +107,14 @@ public class ClientServices
         }
     }
 
-    public string GetProducts()
+    public async Task<string> GetProductsAsync()
     {
         try
         {
             Console.WriteLine("Ingrese el nombre del producto");
             string productName = Console.ReadLine();
-            _dataHandler.SendMessage((int)Command.GetProducts, productName);
-            (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+            await _dataHandler.SendMessageAsync((int)Command.GetProducts, productName);
+            (int responseCommand, string responseMessage) = await _dataHandler.ReceiveMessageAsync();
             foreach (string product in responseMessage.Split(Constant.Separator2))
             {
                 string[] productArray = product.Split(Constant.Separator1);
@@ -131,18 +131,18 @@ public class ClientServices
         }
     }
 
-    public string GetSpecificProduct()
+    public async Task<string> GetSpecificProductAsync()
     {
         try
         {
             Console.WriteLine("Ingrese el ID del producto");
             string id = Console.ReadLine();
-            _dataHandler.SendMessage((int)Command.GetSpecificProduct, id);
-            (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+            await _dataHandler.SendMessageAsync((int)Command.GetSpecificProduct, id);
+            (int responseCommand, string responseMessage) = await _dataHandler.ReceiveMessageAsync();
             string[] productArray = responseMessage.Split(Constant.Separator1);
             if (productArray[0]==Constant.ErrorCode)
                 throw new Exception(productArray[1]);
-            string imagePath= _fileCommsHandler.ReceiveFile(ConfigurationManager.AppSettings[ClientConfig.clientImagePath]);
+            string imagePath= await _fileCommsHandler.ReceiveFileAsync(ConfigurationManager.AppSettings[ClientConfig.clientImagePath]);
             Console.WriteLine(
                                $"ID: {productArray[1]} Nombre: {productArray[2]} \n" +
                                $"Descripcion: {productArray[3]} Stock: {productArray[4]} \n" +
@@ -170,7 +170,7 @@ public class ClientServices
         return reviewsString;
     }
 
-    public string RateProduct()
+    public async Task<string> RateProductAsync()
     {
         try
         {
@@ -181,8 +181,8 @@ public class ClientServices
             Console.WriteLine("Ingrese el comentario del producto");
             string comment = Console.ReadLine();
             string review = id + Constant.Separator1 + rating + Constant.Separator1 + comment;
-            _dataHandler.SendMessage((int)Command.RateProduct, review);
-            (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+            await _dataHandler.SendMessageAsync((int)Command.RateProduct, review);
+            (int responseCommand, string responseMessage) = await _dataHandler.ReceiveMessageAsync();
             return responseMessage;
         }
         catch (Exception e)
@@ -191,7 +191,7 @@ public class ClientServices
         }
     }
 
-    public string DeleteProduct()
+    public async Task<string> DeleteProductAsync()
     {
         try
         {
@@ -199,8 +199,8 @@ public class ClientServices
             string id = Console.ReadLine();
             string username = _username;
             string message = id + Constant.Separator1 + username;
-            _dataHandler.SendMessage((int)Command.DeleteProduct, message);
-            (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+            await _dataHandler.SendMessageAsync((int)Command.DeleteProduct, message);
+            (int responseCommand, string responseMessage) = await _dataHandler.ReceiveMessageAsync();
             return responseMessage;
         }
         catch (Exception e)
@@ -209,7 +209,7 @@ public class ClientServices
         }
     }
 
-    public void ModifyProduct()
+    public async Task ModifyProductAsync()
     {
         try
         {
@@ -224,8 +224,8 @@ public class ClientServices
             string productData = id + Constant.Separator1+ _username+ Constant.Separator1 + description
                              + Constant.Separator2 + stock + Constant.Separator2 +
                              price;
-            _dataHandler.SendMessage((int)Command.ModifyProductData, productData);
-            (int responseCommand1, string responseMessage1) = _dataHandler.ReceiveMessage();
+            await _dataHandler.SendMessageAsync((int)Command.ModifyProductData, productData);
+            (int responseCommand1, string responseMessage1) = await _dataHandler.ReceiveMessageAsync();
             Console.WriteLine(responseMessage1.Split(Constant.Separator1)[1]);
             string responseCode = responseMessage1.Split(Constant.Separator1)[0];
             if (responseCode == Constant.ErrorCode)
@@ -235,9 +235,9 @@ public class ClientServices
             string imagePath = Console.ReadLine();
             if (imagePath != "")
             {
-                _dataHandler.SendMessage((int)Command.ModifyProductImage, id+Constant.Separator1+_username);
-                _fileCommsHandler.SendFile(imagePath);
-                (int responseCommand, string responseMessage) = _dataHandler.ReceiveMessage();
+                await _dataHandler.SendMessageAsync((int)Command.ModifyProductImage, id+Constant.Separator1+_username);
+                await _fileCommsHandler.SendFileAsync(imagePath);
+                (int responseCommand, string responseMessage) = await _dataHandler.ReceiveMessageAsync();
                 Console.WriteLine(responseMessage);
             }
             

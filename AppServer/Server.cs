@@ -16,20 +16,20 @@ public class Server
     readonly TcpListener _listener = new TcpListener(_endpoint);
     
 
-    public void Start()
+    public async Task Start()
     {
        _listener.Start();
         Console.WriteLine("Servidor iniciado");
         bool serverOn = true;
         while (serverOn)
         {
-            TcpClient tcpClient = _listener.AcceptTcpClient();
+            TcpClient tcpClient = await _listener.AcceptTcpClientAsync();
             Console.WriteLine("Cliente conectado");
-            new Thread(() => HandleClient(tcpClient)).Start();
+            var task=Task.Run(async () => await HandleClientAsync(tcpClient));
         }
     }
 
-    public void HandleClient(TcpClient tcpClient)
+    public async Task HandleClientAsync(TcpClient tcpClient)
     {
         bool conectado = true;
         DataHandler dataHandler = new DataHandler(tcpClient);
@@ -38,8 +38,8 @@ public class Server
             try
             {
                 ServerServices serverServices = new ServerServices(tcpClient);
-                (int command, string message) = dataHandler.ReceiveMessage();
-                serverServices.ExecuteCommand(command,message);
+                (int command, string message) = await dataHandler.ReceiveMessageAsync();
+                await serverServices.ExecuteCommandAsync(command,message);
             }
             catch (SocketException e)
             {

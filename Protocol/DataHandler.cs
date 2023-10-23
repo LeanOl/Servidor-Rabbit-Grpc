@@ -11,31 +11,31 @@ namespace Protocol
             _tcpClient= tcpClient;
         }
 
-        public (int, string) ReceiveMessage()
+        public async Task<(int, string)> ReceiveMessageAsync()
         {
-            Byte[] command= Receive(4);
+            Byte[] command= await ReceiveAsync(4);
             int commandInt= BitConverter.ToInt32(command);
-            Byte[] length= Receive(4);
-            Byte[] message= Receive(BitConverter.ToInt32(length));
+            Byte[] length= await ReceiveAsync(4);
+            Byte[] message= await ReceiveAsync(BitConverter.ToInt32(length));
             string messageString = Encoding.UTF8.GetString(message);
             return (commandInt,messageString);
         }
 
-        public void SendMessage(int command, string message)
+        public async Task SendMessageAsync(int command, string message)
         {
             Byte[] commandBytes= BitConverter.GetBytes(command);
-            Send(commandBytes);
+            await SendAsync(commandBytes);
             Byte[] lengthBytes= BitConverter.GetBytes(message.Length);
-            Send(lengthBytes);
+            await SendAsync(lengthBytes);
             Byte[] messageBytes= Encoding.UTF8.GetBytes(message);
-            Send(messageBytes);
+            await SendAsync(messageBytes);
         }
-        public void Send(Byte[] data)
+        public async Task SendAsync(Byte[] data)
         {
             try
             {
                 NetworkStream stream = _tcpClient.GetStream();
-                stream.Write(data);
+                await stream.WriteAsync(data);
             }
             catch (SocketException)
             {
@@ -43,14 +43,14 @@ namespace Protocol
             }
         }
 
-        public byte[] Receive(int size)
+        public async Task<byte[]> ReceiveAsync(int size)
         {
             byte[] data = new byte[size];
             int offset = 0;
             NetworkStream stream = _tcpClient.GetStream();
             while (offset < size)
             {
-                int received = stream.Read(data, offset, size - offset);
+                int received = await stream.ReadAsync(data, offset, size - offset);
                 if (received == 0)
                 {
                     throw new SocketException();

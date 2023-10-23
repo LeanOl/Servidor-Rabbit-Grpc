@@ -8,7 +8,7 @@ public class Menu
 {
     private readonly ConnectionHandler _connectionHandler = new ConnectionHandler();
     private ClientServices? _clientServices;
-    public void StartMenu()
+    public async Task StartMenuAsync()
     {
         try
         {
@@ -16,19 +16,20 @@ public class Menu
             bool authenticated = false;
             while (!authenticated)
             {
-                TcpClient tcpClient = _connectionHandler.Connect();
-                _clientServices = new ClientServices(tcpClient);
                 Console.WriteLine("Ingrese su usuario");
                 string user = Console.ReadLine();
                 Console.WriteLine("Ingrese su contraseña");
                 string password = Console.ReadLine();
 
-                (authenticated, string responseMessage) = _clientServices.Authenticate(user, password);
+                TcpClient tcpClient = await _connectionHandler.ConnectAsync();
+                _clientServices = new ClientServices(tcpClient);
+
+                (authenticated, string responseMessage) = await _clientServices.AuthenticateAsync(user, password);
 
                 if (authenticated)
                 {
                     Console.WriteLine(responseMessage);
-                    MainMenu();
+                    await MainMenu();
                 }
                 else
                 {
@@ -50,7 +51,7 @@ public class Menu
 
 
     }
-    public void MainMenu()
+    public async Task MainMenu()
     {
         bool salir = false;
         while(!salir)
@@ -70,43 +71,43 @@ public class Menu
             {
                 case "1":
                   Console.WriteLine("Publicar producto");
-                   response=_clientServices.PublishProduct();
+                   response= await _clientServices.PublishProductAsync();
                   Console.Clear();
                   Console.WriteLine(response);
                   break;
               case "2":
                   Console.WriteLine("Comprar Producto");
-                   response=_clientServices.BuyProduct();
+                   response= await _clientServices.BuyProductAsync();
                   Console.Clear();
                   Console.WriteLine(response);
                   break;
               case "3":
                   Console.Clear();
                   Console.WriteLine("Modificar Producto");
-                  _clientServices.ModifyProduct();
+                  await _clientServices.ModifyProductAsync();
                   break;
               case "4":
                   Console.Clear();
                   Console.WriteLine("Eliminar producto");
-                  response= _clientServices.DeleteProduct();
+                  response= await _clientServices.DeleteProductAsync();
                   Console.WriteLine(response);
                   break;
               case "5":
                   Console.Clear();
                   Console.WriteLine("Ver productos");
-                  response= _clientServices.GetProducts();
+                  response= await _clientServices.GetProductsAsync();
                   Console.WriteLine(response);
                   break;
               case "6":
                   Console.Clear();
                   Console.WriteLine("Ver producto especifico");
-                  response= _clientServices.GetSpecificProduct();
+                  response= await _clientServices.GetSpecificProductAsync();
                   Console.WriteLine(response);
                   break;
               case "7":
                   Console.Clear();
                   Console.WriteLine("Calificar Producto");
-                  response= _clientServices.RateProduct();
+                  response= await _clientServices.RateProductAsync();
                   Console.WriteLine(response);
                   break;
               case "exit":

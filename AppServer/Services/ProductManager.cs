@@ -8,7 +8,7 @@ namespace AppServer.Services;
 public class ProductManager
 {
     ProductDatabase _productDatabase = ProductDatabase.Instance;
-    public void PublishProduct(string product,FileCommsHandler fileCommsHandler)
+    public async Task PublishProductAsync(string product,FileCommsHandler fileCommsHandler)
     {
         string[] productArray = product.Split(Constant.Separator1);
             string name = productArray[0];
@@ -16,23 +16,33 @@ public class ProductManager
             int stock = Convert.ToInt32(productArray[2]);
             int price = Convert.ToInt32(productArray[3]);
             string username = productArray[4];
+            
+            
 
             Product newProduct = new Product
-            {
-                Name = name,
-                Description = description,
-                Stock = stock,
-                Price = price,
-                Owner = username
-            };
-            
-            _productDatabase.Add(newProduct);
+                {
+                    Name = name,
+                    Description = description,
+                    Stock = stock,
+                    Price = price,
+                    Owner = username
+                    
+                };
             string imagePath = ConfigurationManager.AppSettings[ServerConfig.imagePath];
             string imageName = newProduct.Id + "-image.jpg";
-
-            string filePath=fileCommsHandler.ReceiveFile(imagePath,imageName);
+            string filePath = await fileCommsHandler.ReceiveFileAsync(imagePath, imageName);
             newProduct.Image = filePath;
-        }
+            try
+            {
+                _productDatabase.Add(newProduct);
+            }
+            catch (Exception e)
+            {
+                File.Delete(filePath);
+                throw new Exception(e.Message);
+            }
+
+    }
 
     public string GetProducts(string name)
     {
@@ -162,6 +172,6 @@ public class ProductManager
             throw new Exception("Error! el producto no pertenece al usuario");
         FileDeleter.DeleteFile(product.Image);
         string fileName = productId + "-image.jpg";
-        fileCommsHandler.ReceiveFile(ConfigurationManager.AppSettings[ServerConfig.imagePath], fileName);
+        fileCommsHandler.ReceiveFileAsync(ConfigurationManager.AppSettings[ServerConfig.imagePath], fileName);
     }
 }

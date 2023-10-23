@@ -16,7 +16,7 @@ public class ServerServices
         _fileCommsHandler = new FileCommsHandler(tcpClient);
     }
 
-    public void ExecuteCommand(int command, string message)
+    public async Task ExecuteCommandAsync(int command, string message)
     {
         try
         {
@@ -24,110 +24,109 @@ public class ServerServices
             switch (command)
             {
                 case (int)Command.Authenticate:
-                    ExecuteAuthentication(message);
+                    await ExecuteAuthenticationAsync(message);
                     break;
                 case (int)Command.PublishProduct:
-                    ExecutePublishProduct(message);
+                    await ExecutePublishProductAsync(message);
                     break;
                 case (int)Command.GetProducts:
-                    ExecuteGetProducts(message);
+                    await ExecuteGetProductsAsync(message);
                     break;
                 case (int)Command.BuyProduct:
-                    ExecuteBuyProduct(message);
+                    await ExecuteBuyProductAsync(message);
                     break;
                 case (int)Command.GetSpecificProduct:
-                    ExecuteGetSpecificProduct(message);
+                    await ExecuteGetSpecificProductAsync(message);
                     break;
                 case (int)Command.RateProduct:
-                    ExecuteRateProduct(message);
+                    await ExecuteRateProductAsync(message);
                     break;
                 case (int)Command.DeleteProduct:
-                    ExecuteDeleteProduct(message);
+                    await ExecuteDeleteProductAsync(message);
                     break;
                 case (int)Command.ModifyProductData:
-                    ExecuteModifyProduct(message);
+                    await ExecuteModifyProductAsync(message);
                     break;
                 case (int)Command.ModifyProductImage:
-                    ExecuteModifyProductImage(message);
+                    await ExecuteModifyProductImageAsync(message);
                     break;
             }
         }
         catch (Exception e)
         {
-            _dataHandler.SendMessage(command, e.Message);
+            await _dataHandler.SendMessageAsync(command, e.Message);
         }
     }
 
-    private void ExecuteModifyProductImage(string message)
+    private async Task ExecuteModifyProductImageAsync(string message)
     {
         string[] messageArray = message.Split(Constant.Separator1);
         int productId = Convert.ToInt32(messageArray[0]);
         string username = messageArray[1];
         _productManager.ModifyProductImage(productId, username,_fileCommsHandler);
-        _dataHandler.SendMessage((int)Command.ModifyProductImage, "Imagen modificada correctamente");
+        await _dataHandler.SendMessageAsync((int)Command.ModifyProductImage, "Imagen modificada correctamente");
     }
 
-    private void ExecuteModifyProduct(string message)
+    private async Task ExecuteModifyProductAsync(string message)
     {
         string[] messageArray = message.Split(Constant.Separator1);
         int productId = Convert.ToInt32(messageArray[0]);
         string username = messageArray[1];
         string product = messageArray[2];
         _productManager.ModifyProductData(productId,username,product);
-        _dataHandler.SendMessage((int)Command.ModifyProductData, $"{Constant.OkCode}{Constant.Separator1}Producto modificado correctamente");
+        await _dataHandler.SendMessageAsync((int)Command.ModifyProductData, $"{Constant.OkCode}{Constant.Separator1}Producto modificado correctamente");
     }
 
-    private void ExecuteDeleteProduct(string message)
+    private async Task ExecuteDeleteProductAsync(string message)
     {
         string[] messageArray = message.Split(Constant.Separator1);
         int productId = Convert.ToInt32(messageArray[0]);
         string username = messageArray[1];
         _productManager.DeleteProduct(productId,username);
-        _dataHandler.SendMessage((int)Command.DeleteProduct, "Producto eliminado correctamente");
+        await _dataHandler.SendMessageAsync((int)Command.DeleteProduct, "Producto eliminado correctamente");
     }
 
-    private void ExecuteRateProduct(string review)
+    private async Task ExecuteRateProductAsync(string review)
     {
         _productManager.AddReview(review);
-        _dataHandler.SendMessage((int)Command.RateProduct, "Review agregada correctamente");
+        await _dataHandler.SendMessageAsync((int)Command.RateProduct, "Review agregada correctamente");
     }
 
-    private void ExecuteGetSpecificProduct(string productId)
+    private async Task ExecuteGetSpecificProductAsync(string productId)
     {
         (string product, string imagePath) = _productManager.GetSpecificProduct(productId);
-        _dataHandler.SendMessage((int)Command.GetSpecificProduct, product);
-        _fileCommsHandler.SendFile(imagePath);
+        await _dataHandler.SendMessageAsync((int)Command.GetSpecificProduct, product);
+        await _fileCommsHandler.SendFileAsync(imagePath);
     }
 
-    private void ExecuteBuyProduct(string message)
+    private async Task ExecuteBuyProductAsync(string message)
     {
         _productManager.BuyProduct(message);
-        _dataHandler.SendMessage((int)Command.BuyProduct, "Compra realizada correctamente");
+        await _dataHandler.SendMessageAsync((int)Command.BuyProduct, "Compra realizada correctamente");
     }
 
-    private void ExecuteGetProducts(string message)
+    private async Task ExecuteGetProductsAsync(string message)
     {
         string products = _productManager.GetProducts(message);
-        _dataHandler.SendMessage((int)Command.GetProducts, products);
+        await _dataHandler.SendMessageAsync((int)Command.GetProducts, products);
     }
 
-    private void ExecutePublishProduct(string product)
+    private async Task ExecutePublishProductAsync(string product)
     {
-        
-        _productManager.PublishProduct(product,_fileCommsHandler);
+        await _productManager.PublishProductAsync(product,_fileCommsHandler);
         string responseMessage = "Producto publicado correctamente";
         Console.WriteLine(responseMessage);
-        _dataHandler.SendMessage((int)Command.PublishProduct, responseMessage);
+        await _dataHandler.SendMessageAsync((int)Command.PublishProduct, responseMessage);
     }
 
-    private void ExecuteAuthentication(string credentials)
+    private async Task ExecuteAuthenticationAsync(string credentials)
     {
        
         ClientAuthenticator clientAuthenticator = new ClientAuthenticator();
         clientAuthenticator.Authenticate(credentials);
         string responseMessage = $"{Constant.OkCode}{Constant.Separator1}Cliente autenticado correctamente";
         Console.WriteLine("Cliente autenticado correctamente");
-        _dataHandler.SendMessage((int)Command.Authenticate, responseMessage);
+        await _dataHandler.SendMessageAsync((int)Command.Authenticate, responseMessage);
 
     }
 
