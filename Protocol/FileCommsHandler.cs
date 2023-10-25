@@ -73,7 +73,7 @@ public class FileCommsHandler
         // ---> Recibir el largo del archivo
         long fileSize = _conversionHandler.ConvertBytesToLong(await _tcpHelper.ReceiveAsync(Constant.FixedFileSize));
         // ---> Recibir el archivo
-        ReceiveFileWithStreamsAsync(fileSize, fullPath);
+        await ReceiveFileWithStreamsAsync(fileSize, fullPath);
 
         return fullPath;
     }
@@ -90,7 +90,7 @@ public class FileCommsHandler
         long fileSize = _conversionHandler.ConvertBytesToLong(
             await _tcpHelper.ReceiveAsync(Constant.FixedFileSize));
         // ---> Recibir el archivo
-        ReceiveFileWithStreamsAsync(fileSize, fullPath);
+        await ReceiveFileWithStreamsAsync(fileSize, fullPath);
 
         return fullPath;
     }

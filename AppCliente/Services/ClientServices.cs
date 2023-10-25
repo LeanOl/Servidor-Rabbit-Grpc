@@ -77,8 +77,7 @@ public class ClientServices
 
     public async Task<string> BuyProductAsync()
     {
-        try
-        {
+        
             string productName = "";
             await _dataHandler.SendMessageAsync((int)Command.GetProducts, productName);
 
@@ -100,17 +99,13 @@ public class ClientServices
             (responseCommand, responseMessage) = await _dataHandler.ReceiveMessageAsync();
 
             return responseMessage;
-        }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
+        
+       
     }
 
     public async Task<string> GetProductsAsync()
     {
-        try
-        {
+        
             Console.WriteLine("Ingrese el nombre del producto");
             string productName = Console.ReadLine();
             await _dataHandler.SendMessageAsync((int)Command.GetProducts, productName);
@@ -124,17 +119,12 @@ public class ClientServices
 
 
             return "Consulta exitosa";
-        }
-        catch (Exception e)
-        {
-            return e.Message;
-        }
+        
     }
 
     public async Task<string> GetSpecificProductAsync()
     {
-        try
-        {
+        
             Console.WriteLine("Ingrese el ID del producto");
             string id = Console.ReadLine();
             await _dataHandler.SendMessageAsync((int)Command.GetSpecificProduct, id);
@@ -150,11 +140,7 @@ public class ClientServices
                                $"Usuario: {productArray[6]} \n"+
                                $"Calificaciones: {GetStringReviews(productArray[7])}");
             return "Consulta exitosa";
-        }
-        catch (Exception e)
-        {
-            return e.Message;
-        }
+        
     }
 
     private string GetStringReviews(string reviews)
@@ -172,8 +158,7 @@ public class ClientServices
 
     public async Task<string> RateProductAsync()
     {
-        try
-        {
+        
             Console.WriteLine("Ingrese el ID del producto");
             string id = Console.ReadLine();
             Console.WriteLine("Ingrese una calificacion del 1 al 10");
@@ -184,17 +169,12 @@ public class ClientServices
             await _dataHandler.SendMessageAsync((int)Command.RateProduct, review);
             (int responseCommand, string responseMessage) = await _dataHandler.ReceiveMessageAsync();
             return responseMessage;
-        }
-        catch (Exception e)
-        {
-            return e.Message;
-        }
+        
     }
 
     public async Task<string> DeleteProductAsync()
     {
-        try
-        {
+        
             Console.WriteLine("Ingrese el ID del producto");
             string id = Console.ReadLine();
             string username = _username;
@@ -202,17 +182,12 @@ public class ClientServices
             await _dataHandler.SendMessageAsync((int)Command.DeleteProduct, message);
             (int responseCommand, string responseMessage) = await _dataHandler.ReceiveMessageAsync();
             return responseMessage;
-        }
-        catch (Exception e)
-        {
-            return e.Message;
-        }
+        
     }
 
     public async Task ModifyProductAsync()
     {
-        try
-        {
+        
             Console.WriteLine("Ingrese el ID del producto");
             string id = Console.ReadLine();
             Console.WriteLine("Ingrese la nueva descripcion del producto");
@@ -240,14 +215,6 @@ public class ClientServices
                 (int responseCommand, string responseMessage) = await _dataHandler.ReceiveMessageAsync();
                 Console.WriteLine(responseMessage);
             }
-            
-           
-            
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-        }
-    }
 }
 

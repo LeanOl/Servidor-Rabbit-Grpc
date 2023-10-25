@@ -64,59 +64,75 @@ public class Menu
                               "6- Ver producto especifico \n" +
                               "7- Calificar Producto \n" +
                               "exit- Desconectarse");
-
-            string opcion = Console.ReadLine();
-            string response;
-            switch (opcion)
+            try
             {
-                case "1":
-                  Console.WriteLine("Publicar producto");
-                   response= await _clientServices.PublishProductAsync();
-                  Console.Clear();
-                  Console.WriteLine(response);
-                  break;
-              case "2":
-                  Console.WriteLine("Comprar Producto");
-                   response= await _clientServices.BuyProductAsync();
-                  Console.Clear();
-                  Console.WriteLine(response);
-                  break;
-              case "3":
-                  Console.Clear();
-                  Console.WriteLine("Modificar Producto");
-                  await _clientServices.ModifyProductAsync();
-                  break;
-              case "4":
-                  Console.Clear();
-                  Console.WriteLine("Eliminar producto");
-                  response= await _clientServices.DeleteProductAsync();
-                  Console.WriteLine(response);
-                  break;
-              case "5":
-                  Console.Clear();
-                  Console.WriteLine("Ver productos");
-                  response= await _clientServices.GetProductsAsync();
-                  Console.WriteLine(response);
-                  break;
-              case "6":
-                  Console.Clear();
-                  Console.WriteLine("Ver producto especifico");
-                  response= await _clientServices.GetSpecificProductAsync();
-                  Console.WriteLine(response);
-                  break;
-              case "7":
-                  Console.Clear();
-                  Console.WriteLine("Calificar Producto");
-                  response= await _clientServices.RateProductAsync();
-                  Console.WriteLine(response);
-                  break;
-              case "exit":
-                  _connectionHandler.Disconnect();
-                  salir = true;
-                  break;
-              default:
-                  Console.WriteLine("Opción no valida");
-                  break;
+                string opcion = Console.ReadLine();
+                string response;
+                switch (opcion)
+                {
+                    case "1":
+                        Console.WriteLine("Publicar producto");
+                        response = await _clientServices.PublishProductAsync();
+                        Console.Clear();
+                        Console.WriteLine(response);
+                        break;
+                    case "2":
+                        Console.WriteLine("Comprar Producto");
+                        response = await _clientServices.BuyProductAsync();
+                        Console.Clear();
+                        Console.WriteLine(response);
+                        break;
+                    case "3":
+                        Console.Clear();
+                        Console.WriteLine("Modificar Producto");
+                        await _clientServices.ModifyProductAsync();
+                        break;
+                    case "4":
+                        Console.Clear();
+                        Console.WriteLine("Eliminar producto");
+                        response = await _clientServices.DeleteProductAsync();
+                        Console.WriteLine(response);
+                        break;
+                    case "5":
+                        Console.Clear();
+                        Console.WriteLine("Ver productos");
+                        response = await _clientServices.GetProductsAsync();
+                        Console.WriteLine(response);
+                        break;
+                    case "6":
+                        Console.Clear();
+                        Console.WriteLine("Ver producto especifico");
+                        response = await _clientServices.GetSpecificProductAsync();
+                        Console.WriteLine(response);
+                        break;
+                    case "7":
+                        Console.Clear();
+                        Console.WriteLine("Calificar Producto");
+                        response = await _clientServices.RateProductAsync();
+                        Console.WriteLine(response);
+                        break;
+                    case "exit":
+                        _connectionHandler.Disconnect();
+                        salir = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opción no valida");
+                        break;
+                }
+            }
+            catch (IOException e)
+            {
+                salir = true;
+                Console.WriteLine($"Error al conectarse al servidor:{e.Message}");
+            }
+            catch (InvalidOperationException e)
+            {
+                salir = true;
+                Console.WriteLine($"Error al conectarse al servidor:{e.Message}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error: {e.Message}");
             }
         }
         
