@@ -32,7 +32,22 @@ public class ProductManager
 
             string filePath=fileCommsHandler.ReceiveFile(imagePath,imageName);
             newProduct.Image = filePath;
-        }
+    }
+    public void PublishProduct(string name,string description,int stock, int price,string username)
+    {
+        
+        Product newProduct = new Product
+        {
+            Name = name,
+            Description = description,
+            Stock = stock,
+            Price = price,
+            Owner = username
+        };
+
+        _productDatabase.Add(newProduct);
+
+    }
 
     public string GetProducts(string name)
     {
@@ -113,12 +128,16 @@ public class ProductManager
         }
     }
 
-    public void AddReview(string productId)
+    public Product GetProduct(int productId)
     {
-        string[] productArray = productId.Split(Constant.Separator1);
-        int id = Convert.ToInt32(productArray[0]);
-        int rating = Convert.ToInt32(productArray[1]);
-        string comment = productArray[2];
+        Product product = _productDatabase.Get(p => p.Id == productId).FirstOrDefault();
+        if (product == null)
+            throw new Exception("Error! el producto no existe");
+        return product;
+    }
+
+    public void AddReview(int id,int rating,string comment)
+    {
         Product product = _productDatabase.Get(p => p.Id == id).FirstOrDefault();
         if (product == null)
             throw new Exception("Error! el producto no existe");
@@ -136,21 +155,19 @@ public class ProductManager
         _productDatabase.Delete(product);
     }
 
-    public void ModifyProductData(int productId, string username, string product)
+    public void ModifyProductData(int productId, string username, string description,int stock,int price)
     {
         Product productToModify = _productDatabase.Get(p => p.Id == productId).FirstOrDefault();
         if (productToModify == null)
             throw new Exception($"{Constant.ErrorCode}{Constant.Separator1}Error! el producto no existe");
         if (productToModify.Owner != username)
             throw new Exception($"{Constant.ErrorCode}{Constant.Separator1}Error! el producto no pertenece al usuario");
-        string[] productArray = product.Split(Constant.Separator2);
-        string description = productArray[0];
-        int stock = Convert.ToInt32(productArray[1]);
-        int price = Convert.ToInt32(productArray[2]);
+       
         productToModify.Description = description;
         productToModify.Stock = stock;
         productToModify.Price = price;
     }
+
 
     public void ModifyProductImage(int productId,string username, FileCommsHandler fileCommsHandler)
     {
@@ -164,4 +181,5 @@ public class ProductManager
         string fileName = productId + "-image.jpg";
         fileCommsHandler.ReceiveFile(ConfigurationManager.AppSettings[ServerConfig.imagePath], fileName);
     }
+
 }

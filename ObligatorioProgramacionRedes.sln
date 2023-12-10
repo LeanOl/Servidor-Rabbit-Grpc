@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppServer", "AppServer\AppS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Protocol", "Protocol\Protocol.csproj", "{9F047290-F56A-40C7-8632-3CFA8080FE62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminServer", "AdminServer\AdminServer.csproj", "{A716D581-8615-4A91-B0EB-1F68D6500F26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcServer", "GrpcServer\GrpcServer.csproj", "{8E2E9604-DE26-4BA0-A121-EED37C29E042}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{9F047290-F56A-40C7-8632-3CFA8080FE62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F047290-F56A-40C7-8632-3CFA8080FE62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F047290-F56A-40C7-8632-3CFA8080FE62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A716D581-8615-4A91-B0EB-1F68D6500F26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A716D581-8615-4A91-B0EB-1F68D6500F26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A716D581-8615-4A91-B0EB-1F68D6500F26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A716D581-8615-4A91-B0EB-1F68D6500F26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E2E9604-DE26-4BA0-A121-EED37C29E042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E2E9604-DE26-4BA0-A121-EED37C29E042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E2E9604-DE26-4BA0-A121-EED37C29E042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E2E9604-DE26-4BA0-A121-EED37C29E042}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

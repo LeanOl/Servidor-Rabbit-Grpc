@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Net.Sockets;
+using AppServer.Domain;
 using Protocol;
 
 namespace AppServer.Services;
@@ -73,7 +74,13 @@ public class ServerServices
         int productId = Convert.ToInt32(messageArray[0]);
         string username = messageArray[1];
         string product = messageArray[2];
-        _productManager.ModifyProductData(productId,username,product);
+        string[] productArray = product.Split(Constant.Separator2);
+        string description = productArray[0];
+        int stock = Convert.ToInt32(productArray[1]);
+        int price = Convert.ToInt32(productArray[2]);
+
+        _productManager.ModifyProductData(productId,username,description,stock,price);
+
         _dataHandler.SendMessage((int)Command.ModifyProductData, $"{Constant.OkCode}{Constant.Separator1}Producto modificado correctamente");
     }
 
@@ -88,7 +95,11 @@ public class ServerServices
 
     private void ExecuteRateProduct(string review)
     {
-        _productManager.AddReview(review);
+        string[] productArray = review.Split(Constant.Separator1);
+        int id = Convert.ToInt32(productArray[0]);
+        int rating = Convert.ToInt32(productArray[1]);
+        string comment = productArray[2];
+        _productManager.AddReview(id,rating,comment);
         _dataHandler.SendMessage((int)Command.RateProduct, "Review agregada correctamente");
     }
 
