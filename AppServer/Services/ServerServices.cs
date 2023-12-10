@@ -63,7 +63,7 @@ public class ServerServices
         string[] messageArray = message.Split(Constant.Separator1);
         int productId = Convert.ToInt32(messageArray[0]);
         string username = messageArray[1];
-        _productManager.ModifyProductImage(productId, username,_fileCommsHandler);
+        await _productManager.ModifyProductImage(productId, username,_fileCommsHandler);
         await _dataHandler.SendMessageAsync((int)Command.ModifyProductImage, "Imagen modificada correctamente");
     }
 
@@ -73,7 +73,11 @@ public class ServerServices
         int productId = Convert.ToInt32(messageArray[0]);
         string username = messageArray[1];
         string product = messageArray[2];
-        _productManager.ModifyProductData(productId,username,product);
+        string[] productArray = product.Split(Constant.Separator2);
+        string description = productArray[0];
+        int stock = Convert.ToInt32(productArray[1]);
+        int price = Convert.ToInt32(productArray[2]);
+        _productManager.ModifyProductData(productId,username,description,stock,price);
         await _dataHandler.SendMessageAsync((int)Command.ModifyProductData, $"{Constant.OkCode}{Constant.Separator1}Producto modificado correctamente");
     }
 

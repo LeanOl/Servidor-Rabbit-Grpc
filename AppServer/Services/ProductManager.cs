@@ -146,23 +146,19 @@ public class ProductManager
         _productDatabase.Delete(product);
     }
 
-    public void ModifyProductData(int productId, string username, string product)
+    public void ModifyProductData(int productId, string username, string description,int stock, int price)
     {
         Product productToModify = _productDatabase.Get(p => p.Id == productId).FirstOrDefault();
         if (productToModify == null)
             throw new Exception($"{Constant.ErrorCode}{Constant.Separator1}Error! el producto no existe");
         if (productToModify.Owner != username)
             throw new Exception($"{Constant.ErrorCode}{Constant.Separator1}Error! el producto no pertenece al usuario");
-        string[] productArray = product.Split(Constant.Separator2);
-        string description = productArray[0];
-        int stock = Convert.ToInt32(productArray[1]);
-        int price = Convert.ToInt32(productArray[2]);
         productToModify.Description = description;
         productToModify.Stock = stock;
         productToModify.Price = price;
     }
 
-    public void ModifyProductImage(int productId,string username, FileCommsHandler fileCommsHandler)
+    public async Task ModifyProductImage(int productId,string username, FileCommsHandler fileCommsHandler)
     {
         
         Product product = _productDatabase.Get(p => p.Id == productId).FirstOrDefault();
@@ -172,6 +168,30 @@ public class ProductManager
             throw new Exception("Error! el producto no pertenece al usuario");
         FileDeleter.DeleteFile(product.Image);
         string fileName = productId + "-image.jpg";
-        fileCommsHandler.ReceiveFileAsync(ConfigurationManager.AppSettings[ServerConfig.imagePath], fileName);
+        await fileCommsHandler.ReceiveFileAsync(ConfigurationManager.AppSettings[ServerConfig.imagePath], fileName);
+    }
+
+   
+    public void PublishProduct(string name, string description, int stock, int price, string username)
+    {
+
+        Product newProduct = new Product
+        {
+            Name = name, 
+            Description = description, 
+            Stock = stock,
+            Price = price, Owner = username
+        };
+
+        _productDatabase.Add(newProduct);
+
+    }
+
+    public Product GetProduct(int productId)
+    {
+        Product product = _productDatabase.Get(p => p.Id == productId).FirstOrDefault();
+       if(product == null)
+           throw new Exception("Error! el producto no existe");
+       return product;
     }
 }

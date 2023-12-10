@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcServer";
+
+package admin;
+
+service Admin {
+
+  // Functions availables
+  rpc PostProduct(ProductDTO) returns (MessageReply);
+  rpc ModifyProduct(ModifyProductRequest) returns (MessageReply);
+  rpc DeleteProduct(DeleteProductRequest) returns (MessageReply);
+  rpc BuyProduct(BuyProductRequest) returns (MessageReply);
+  rpc GetReviews(GetReviewsRequest) returns (GetReviewsResponse);
+ 
+}
+
+  message ProductDTO{
+	string username = 1;
+	string name = 2;
+	string description = 3;
+	int32 stock = 4;
+	int32 price = 5;
+
+  }
+
+  message ModifyProductRequest {
+	int32 id  = 1;
+	string username = 2;
+	string description = 3;
+	int32 stock = 4;
+	int32 price = 5;
+}
+
+  message DeleteProductRequest {
+	int32 id = 1;
+	string username = 2;
+}
+
+  message BuyProductRequest {
+	string id = 1;
+  }
+
+message GetReviewsRequest {
+	int32 id = 1;
+}
+
+message GetReviewsResponse {
+	repeated ReviewDTO reviews = 1;
+}
+
+message ReviewDTO {
+	string comment = 1;
+	int32 rating = 2;
+}
+
+
+  message MessageReply {
+	string message = 1;
+}
