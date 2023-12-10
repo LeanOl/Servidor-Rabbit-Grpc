@@ -63,7 +63,7 @@ namespace GrpcServer.Services
             string message;
             try
             {
-                productManager.BuyProduct(request.Id);
+                productManager.BuyProduct(request.Id,request.Username);
                 message = $"Producto {request.Id} se ha comprado correctamente";
             }
             catch (Exception e)

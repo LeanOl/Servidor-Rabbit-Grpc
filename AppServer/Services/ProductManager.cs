@@ -73,9 +73,9 @@ public class ProductManager
         return productString;
     }
 
-    public void BuyProduct(string id)
+    public void BuyProduct(int idProduct,string username)
     {
-        int idProduct = Convert.ToInt32(id);
+       
         Product product = _productDatabase.Get(p => p.Id == idProduct).FirstOrDefault();
         if (product != null )
         {

@@ -105,7 +105,10 @@ public class ServerServices
 
     private async Task ExecuteBuyProductAsync(string message)
     {
-        _productManager.BuyProduct(message);
+        string[] messageArray = message.Split(Constant.Separator1);
+        int productId = Convert.ToInt32(messageArray[0]);
+        string username = messageArray[1];
+        _productManager.BuyProduct(productId,username);
         await _dataHandler.SendMessageAsync((int)Command.BuyProduct, "Compra realizada correctamente");
     }
 

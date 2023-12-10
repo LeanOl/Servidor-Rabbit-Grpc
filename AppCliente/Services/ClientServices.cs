@@ -93,8 +93,10 @@ public class ClientServices
             Console.WriteLine("Ingrese el ID del producto que desea comprar");
 
             string id = Console.ReadLine();
+            string username = _username;
+            string message = id + Constant.Separator1 + username;
 
-            await _dataHandler.SendMessageAsync((int)Command.BuyProduct, id);
+            await _dataHandler.SendMessageAsync((int)Command.BuyProduct, message);
 
             (responseCommand, responseMessage) = await _dataHandler.ReceiveMessageAsync();
 

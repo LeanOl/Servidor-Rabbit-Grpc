@@ -38,9 +38,10 @@ service Admin {
 	string username = 2;
 }
 
-  message BuyProductRequest {
-	string id = 1;
-  }
+message BuyProductRequest {
+	int32 id = 1;
+	string username = 2;
+ }
 
 message GetReviewsRequest {
 	int32 id = 1;
