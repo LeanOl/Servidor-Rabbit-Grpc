@@ -82,6 +82,14 @@ public class ProductManager
             if(product.Stock == 0)
                 throw new Exception("Error! el producto no tiene stock");
             product.Stock--;
+            Purchase purchase = new Purchase
+            {
+                ProductId = idProduct,
+                Username = username,
+                Date = DateTime.Now
+            };
+            EventSender.SendPurchaseEvent(purchase);
+
         }else
         { 
             throw new Exception("Error! el producto no existe");

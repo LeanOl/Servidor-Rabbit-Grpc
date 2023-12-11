@@ -1,4 +1,4 @@
-﻿namespace AppServer.Domain;
+﻿namespace PurchasesServer.Domain;
 
 public class Purchase
 {

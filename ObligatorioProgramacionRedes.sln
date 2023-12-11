@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppServer", "AppServer\AppS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Protocol", "Protocol\Protocol.csproj", "{9F047290-F56A-40C7-8632-3CFA8080FE62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminServer", "AdminServer\AdminServer.csproj", "{25E38903-BE32-44C8-B39C-87A8793EB4A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminServer", "AdminServer\AdminServer.csproj", "{25E38903-BE32-44C8-B39C-87A8793EB4A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcServer", "GrpcServer\GrpcServer.csproj", "{42A04E77-01B0-4876-83C7-DF942381D955}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcServer", "GrpcServer\GrpcServer.csproj", "{42A04E77-01B0-4876-83C7-DF942381D955}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PurchasesServer", "PurchasesServer\PurchasesServer.csproj", "{A0323639-7BA5-4CC0-8940-F5D60934430E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{42A04E77-01B0-4876-83C7-DF942381D955}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42A04E77-01B0-4876-83C7-DF942381D955}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42A04E77-01B0-4876-83C7-DF942381D955}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0323639-7BA5-4CC0-8940-F5D60934430E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0323639-7BA5-4CC0-8940-F5D60934430E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0323639-7BA5-4CC0-8940-F5D60934430E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0323639-7BA5-4CC0-8940-F5D60934430E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
