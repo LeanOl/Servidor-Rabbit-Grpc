@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminServer", "AdminServer\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcServer", "GrpcServer\GrpcServer.csproj", "{42A04E77-01B0-4876-83C7-DF942381D955}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PurchasesServer", "PurchasesServer\PurchasesServer.csproj", "{A0323639-7BA5-4CC0-8940-F5D60934430E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PurchasesServer", "PurchasesServer\PurchasesServer.csproj", "{A0323639-7BA5-4CC0-8940-F5D60934430E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailServer", "MailServer\MailServer.csproj", "{9462936B-634F-4BE5-B0E1-0C2B1492E7BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{A0323639-7BA5-4CC0-8940-F5D60934430E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0323639-7BA5-4CC0-8940-F5D60934430E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0323639-7BA5-4CC0-8940-F5D60934430E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9462936B-634F-4BE5-B0E1-0C2B1492E7BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9462936B-634F-4BE5-B0E1-0C2B1492E7BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9462936B-634F-4BE5-B0E1-0C2B1492E7BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9462936B-634F-4BE5-B0E1-0C2B1492E7BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
