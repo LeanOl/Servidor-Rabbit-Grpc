@@ -20,13 +20,15 @@ namespace PurchasesServer
 
             var app = builder.Build();
 
+            app.Urls.Add("http://localhost:5333");
+            app.Urls.Add("https://localhost:5334");
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

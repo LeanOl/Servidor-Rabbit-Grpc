@@ -20,6 +20,7 @@ public static class EventSender
 
     public static void SendPurchaseEvent(Purchase purchase)
     {
+        
         var json = JsonSerializer.Serialize(purchase);
         var body = Encoding.UTF8.GetBytes(json);
 

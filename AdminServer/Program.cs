@@ -15,6 +15,8 @@ namespace AdminServer
 
             var app = builder.Build();
 
+            app.Urls.Add("http://localhost:5222");
+            app.Urls.Add("https://localhost:5223");
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

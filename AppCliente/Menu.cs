@@ -133,7 +133,7 @@ public class Menu
             catch (Exception e)
             {
                 Console.WriteLine($"Error: {e.Message}");
-            }
+            }   
         }
         
     }
